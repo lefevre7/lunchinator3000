@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 public class CreateBallot {
     private UUID ballotId;
     private Date time;
-    private ArrayList<Voter> voters;
+    private ArrayList<Voter1> voters;
 
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
@@ -31,14 +31,14 @@ public class CreateBallot {
         return new ResponseEntity(HttpStatus.CREATED);
     }*/
 
-    @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST)
-    public ResponseEntity<String> createBallot(@JsonProperty("endTime") @RequestBody Date time, @JsonProperty("voters")@RequestBody ArrayList<Voter> voters) {
-        //return new Ballot(ballotId, time,voters);
-        Ballot ballot = getBallot(time, voters);
+    @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot /*@JsonProperty("endTime") @RequestBody Date time, @JsonProperty("voters")@RequestBody ArrayList<Voter> voters*/) {
+
+        Ballot1 ballot = getBallot(initialBallot);//time, voters);
         String ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}";
         return new ResponseEntity<String>(ballotId, HttpStatus.CREATED);
     }
-    public Ballot getBallot(Date time, ArrayList<Voter> voters) {
+    public Ballot1 getBallot(InitialBallot1 initialBallot) {//Date time, ArrayList<Voter> voters) {
         final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
         ballotId = UUID.randomUUID();
         //time = Time.valueOf()
@@ -49,6 +49,149 @@ public class CreateBallot {
         //Ballot ballot = restTemplate.getForObject(uri, ballot);
 
         //System.out.println(result);
-        return new Ballot(ballotId, time, voters);//just return ballot id
+        return new Ballot1(ballotId, initialBallot.getTime(), initialBallot.getVoters());//time, voters);//just return ballot id
     }
+
+    public static class InitialBallot1 {
+        private Date time;
+        private ArrayList<Voter1> voters;
+
+        public InitialBallot1(Date time, ArrayList<Voter1> voters) {
+            this.voters = voters;
+            this.time = time;
+        }
+        public InitialBallot1() {
+
+        }
+
+        public ArrayList<Voter1> getVoters() {
+            return voters;
+        }
+
+        public void setVoters(ArrayList<Voter1> voters) {
+            this.voters = voters;
+        }
+
+        public Date getTime() {
+            return time;
+        }
+
+        public void setTime(Date time) {
+            this.time = time;
+        }
+    }
+
+    public static class Voter1 {
+        private String name;
+        private String email;
+
+        public Voter1(String name, String email) {
+            this.name = name;
+            this.email = email;
+        }
+
+        public Voter1() {
+        }
+
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+    }
+
+    public static class Ballot1 {
+        private UUID ballotId;
+        private Date time;
+        private ArrayList<Voter1> voters;
+
+        private ArrayList<IncomingRestaurant> incomingRestaurants;
+        private RestaurantSuggestion restaurantSuggestion;
+        private ArrayList<RestaurantChoiceBefore> restaurantChoiceBefores;
+        private ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters;
+        private RestaurantWinner restaurantWinner;
+
+        public Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters) {
+            this.ballotId = ballotId;
+            this.time = time;
+            this.voters = voters;
+        }
+
+        public UUID getBallotId() {
+            return ballotId;
+        }
+
+        public void setBallotId(UUID ballotId) {
+            this.ballotId = ballotId;
+        }
+
+        public Date getTime() {
+            return time;
+        }
+
+        public void setTime(Date time) {
+            this.time = time;
+        }
+
+        public ArrayList<Voter1> getVoters() {
+            return voters;
+        }
+
+        public void setVoters(ArrayList<Voter1> voters) {
+            this.voters = voters;
+        }
+
+        public ArrayList<IncomingRestaurant> getIncomingRestaurants() {
+            return incomingRestaurants;
+        }
+
+        public void setIncomingRestaurants(ArrayList<IncomingRestaurant> incomingRestaurants) {
+            this.incomingRestaurants = incomingRestaurants;
+        }
+
+        public RestaurantSuggestion getRestaurantSuggestion() {
+            return restaurantSuggestion;
+        }
+
+        public void setRestaurantSuggestion(RestaurantSuggestion restaurantSuggestion) {
+            this.restaurantSuggestion = restaurantSuggestion;
+        }
+
+        public ArrayList<RestaurantChoiceBefore> getRestaurantChoiceBefores() {
+            return restaurantChoiceBefores;
+        }
+
+        public void setRestaurantChoiceBefores(ArrayList<RestaurantChoiceBefore> restaurantChoiceBefores) {
+            this.restaurantChoiceBefores = restaurantChoiceBefores;
+        }
+
+        public ArrayList<RestaurantChoiceAfter> getRestaurantChoiceAfters() {
+            return restaurantChoiceAfters;
+        }
+
+        public void setRestaurantChoiceAfters(ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters) {
+            this.restaurantChoiceAfters = restaurantChoiceAfters;
+        }
+
+        public RestaurantWinner getRestaurantWinner() {
+            return restaurantWinner;
+        }
+
+        public void setRestaurantWinner(RestaurantWinner restaurantWinner) {
+            this.restaurantWinner = restaurantWinner;
+        }
+    }
+
+
 }
