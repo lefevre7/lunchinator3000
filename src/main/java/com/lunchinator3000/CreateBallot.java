@@ -24,15 +24,8 @@ public class CreateBallot {
     private static final String template = "Hello, %s!";
     private final AtomicLong counter = new AtomicLong();
 
-    /*@RequestMapping(value = "/employees", method = RequestMethod.POST)
-    public ResponseEntity<String> createEmployee(@RequestBody Ballot employee)
-    {
-        System.out.println(employee);
-        return new ResponseEntity(HttpStatus.CREATED);
-    }*/
-
     @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
-    public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot /*@JsonProperty("endTime") @RequestBody Date time, @JsonProperty("voters")@RequestBody ArrayList<Voter> voters*/) {
+    public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot) {
 
         Ballot1 ballot = getBallot(initialBallot);//time, voters);
         String ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}";
@@ -52,6 +45,10 @@ public class CreateBallot {
         return new Ballot1(ballotId, initialBallot.getTime(), initialBallot.getVoters());//time, voters);//just return ballot id
     }
 
+    /**
+     * This is a sub-class of CreateBallot because in order for the springframework to notice an incoming JSON object,
+     * there needs to be an inner static class that looks like the object.
+     */
     public static class InitialBallot1 {
         private Date time;
         private ArrayList<Voter1> voters;
@@ -81,6 +78,10 @@ public class CreateBallot {
         }
     }
 
+    /**
+     * This is a sub-class of CreateBallot because in order for the springframework to notice an incoming JSON object,
+     * there needs to be an inner static class that looks like the object.
+     */
     public static class Voter1 {
         private String name;
         private String email;
@@ -111,6 +112,11 @@ public class CreateBallot {
         }
     }
 
+    /**
+     * This is a sub-class of CreateBallot because in order for the springframework to notice an incoming JSON object,
+     * there needs to be an inner static class that looks like the object (Voter1 - which needs to be included in the
+     * Ballot object).
+     */
     public static class Ballot1 {
         private UUID ballotId;
         private Date time;
