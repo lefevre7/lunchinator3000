@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -17,7 +18,7 @@ import java.util.UUID;
 @RestController
 public class BallotController {
 
-    Time time;
+    Date time;
     ArrayList<Voter> voters;
 
     public BallotController() {

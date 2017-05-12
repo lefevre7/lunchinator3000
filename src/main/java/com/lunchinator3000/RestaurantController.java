@@ -17,7 +17,7 @@ public class RestaurantController {
     public RestaurantController() {
 
     }
-    @RequestMapping("/restaurants")
+    @RequestMapping("/restaurants")//how to do in java 3)
     public /*ArrayList<IncomingRestaurant>*/ String getRestaurants() { //ResponseEntity<Ballot>
         final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
 

@@ -2,6 +2,7 @@ package com.lunchinator3000;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -9,7 +10,7 @@ import java.util.UUID;
  */
 public class Ballot {
     private UUID ballotId;
-    private Time time;
+    private Date time;
     private ArrayList<Voter> voters;
 
     private ArrayList<IncomingRestaurant> incomingRestaurants;
@@ -18,7 +19,7 @@ public class Ballot {
     private ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters;
     private RestaurantWinner restaurantWinner;
 
-    public Ballot(UUID ballotId, Time time, ArrayList<Voter> voters) {
+    public Ballot(UUID ballotId, Date time, ArrayList<Voter> voters) {
         this.ballotId = ballotId;
         this.time = time;
         this.voters = voters;
@@ -32,11 +33,11 @@ public class Ballot {
         this.ballotId = ballotId;
     }
 
-    public Time getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public void setTime(Time time) {
+    public void setTime(Date time) {
         this.time = time;
     }
 
