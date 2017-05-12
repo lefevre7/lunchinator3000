@@ -1,46 +1,52 @@
 package com.lunchinator3000;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.UUID;
 
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-@RestController
 public class Vote {
+    private UUID ballotId;
+    private String emailAddress;
+    private int restaurantId;
+    private String voterName;
 
-    public Vote() {
+    public Vote(UUID ballotId, String emailAddress, int restaurantId, String voterName) {
+        this.ballotId = ballotId;
+        this.emailAddress = emailAddress;
+        this.restaurantId = restaurantId;
+        this.voterName = voterName;
     }
 
-    Ballot ballot;//a created ballot with guid for that day
-
-    @RequestMapping(value = "/api/vote", method = RequestMethod.POST)
-    public @ResponseBody /*ResponseEntity<String>*/ void getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
-                                                 @RequestParam("voterName") String voterName,
-                                                 @RequestParam("emailAddress") String emailAddress) {
-        //string = "hi";
-        //System.out.println(string);
-        //return new ResponseEntity(string, HttpStatus.CREATED);//return new ResponseEntity<Ballot>(ballot, HttpStatus.OK)
-
-        recordVote(id, ballotId, voterName, emailAddress);
+    public UUID getBallotId() {
+        return ballotId;
     }
 
-    private void recordVote(int id, UUID ballotId, String voterName, String emailAddress) {
-
-        if (ballot.getBallotId() == ballotId){
-            Voter voter = new Voter(voterName, emailAddress); //todo check and see if the voter exists (if they already voted)
-            if(ballot.getVoters().contains(voter))
-            {//replace voter guess where the voter guessed
-
-            }
-            else {
-                ballot.getVoters().add(voter);//and guess
-            }
-        }
-
+    public void setBallotId(UUID ballotId) {
+        this.ballotId = ballotId;
     }
 
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public int getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(int restaurantId) {
+        this.restaurantId = restaurantId;
+    }
+
+    public String getVoterName() {
+        return voterName;
+    }
+
+    public void setVoterName(String voterName) {
+        this.voterName = voterName;
+    }
 }

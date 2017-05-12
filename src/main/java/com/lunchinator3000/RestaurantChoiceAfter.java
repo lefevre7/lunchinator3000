@@ -20,4 +20,9 @@ public class RestaurantChoiceAfter extends AbstractRestaurant {
     public void setVotes(int votes) {
         this.votes = votes;
     }
+
+    public void incrementVotes() {
+        votes = votes++;
+    }
+
 }
