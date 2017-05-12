@@ -3,6 +3,7 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/10/2017.
  */
+import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ public class CreateBallot {
     private UUID ballotId;
     private Date time;
     private ArrayList<Voter1> voters;
+    private ArrayList<IncomingRestaurant> incomingRestaurants;
 
     private final AtomicLong counter = new AtomicLong();
 
@@ -33,6 +35,15 @@ public class CreateBallot {
     public Ballot1 getBallot(InitialBallot1 initialBallot) {
         final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants";
         ballotId = UUID.randomUUID();
+
+        RestaurantController restaurantController = new RestaurantController();
+        try {
+            incomingRestaurants = restaurantController.getRestaurants();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(incomingRestaurants);
         //time = Time.valueOf()
 
         //RestTemplate restTemplate = new RestTemplate();

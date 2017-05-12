@@ -1,9 +1,12 @@
 package com.lunchinator3000;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -17,21 +20,30 @@ public class RestaurantController {
     public RestaurantController() {
 
     }
-    @RequestMapping("/restaurants")//how to do in java 3)
-    public /*ArrayList<IncomingRestaurant>*/ String getRestaurants() { //ResponseEntity<Ballot>
-        final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
+    //@RequestMapping(value = "/restaurants", produces = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.GET)//how to do in java 3)
+    public @ResponseBody ArrayList<IncomingRestaurant> /*ResponseEntity<String>*/ getRestaurants(/*@RequestBody ArrayList<IncomingRestaurant> incomingRestaurants/*CreateBallot.InitialBallot1 initialBallot*/) throws IOException { //ResponseEntity<Ballot>
+        ArrayList<IncomingRestaurant> incomingRestaurants = null;
+         //time = Time.valueOf()
+        ObjectMapper mapper = new ObjectMapper();
+         //RestTemplate restTemplate = new RestTemplate();
+         ////Ballot ballot = new Ballot();
+         //String result = restTemplate.getForObject(uri, String.class);
+         //String result = "{'name' : 'mkyong'}";
+         //result.replaceAll("\\[", "").replaceAll("\\]", "");
+        incomingRestaurants = mapper.readValue(new URL("https://interview-project-17987.herokuapp.com/api/restaurants"), new ArrayList<IncomingRestaurant>().getClass());
+         ////Ballot ballot = restTemplate.getForObject(uri, ballot);
 
-        //time = Time.valueOf()
+         //HttpHeaders headers = new HttpHeaders();
+         //headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+         //HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        //Ballot ballot = new Ballot();
-        String result = restTemplate.getForObject(uri, String.class);
-        //Ballot ballot = restTemplate.getForObject(uri, ballot);
+         //ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
 
-        System.out.println(result);
+
+         //System.out.println(result);
+        //System.out.println(incomingRestaurants);
 
         ballotId = UUID.randomUUID();
-        return result; //return new ResponseEntity<Ballot>(ballot, HttpStatus.OK);
+        return incomingRestaurants; //return new ResponseEntity<Ballot>(ballot, HttpStatus.OK);
     }
-
 }
