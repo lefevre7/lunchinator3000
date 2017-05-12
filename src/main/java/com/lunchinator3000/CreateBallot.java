@@ -21,29 +21,31 @@ public class CreateBallot {
     private UUID ballotId;
     private Date time;
     private ArrayList<Voter1> voters;
-    private ArrayList<IncomingRestaurant> incomingRestaurants;
+    private ArrayList<IncomingRestaurant> randomRestaurants;
 
     private final AtomicLong counter = new AtomicLong();
 
     @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
     public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot) {
 
-        Ballot1 ballot = getBallot(initialBallot);
-        String ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}";
+        Ballot1 ballot = getNewBallot(initialBallot);
+        String ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}"; // Format it like JSON
         return new ResponseEntity<String>(ballotId, HttpStatus.CREATED);
     }
-    public Ballot1 getBallot(InitialBallot1 initialBallot) {
+    public Ballot1 getNewBallot(InitialBallot1 initialBallot) {
         final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants";
         ballotId = UUID.randomUUID();
 
-        RestaurantController restaurantController = new RestaurantController();
+        /*RestaurantController restaurantController = new RestaurantController();
         try {
-            incomingRestaurants = restaurantController.getRestaurants();
+            randomRestaurants = restaurantController.getRestaurants();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        System.out.println(incomingRestaurants);
+        System.out.println(randomRestaurants);*/
+
+
         //time = Time.valueOf()
 
         //RestTemplate restTemplate = new RestTemplate();

@@ -4,22 +4,22 @@ package com.lunchinator3000;
  * Created by Jeremy L on 5/11/2017.
  */
 public class RestaurantSuggestion extends AbstractRestaurant {
-    private String averageReview;
+    private int averageReview;
     private String TopReviewer;
     private String Review;
 
-    public RestaurantSuggestion(int id, String name, String averageReview, String TopReviewer, String Review) {
+    public RestaurantSuggestion(int id, String name, int averageReview, String TopReviewer, String Review) {
         super(id, name);
         this.averageReview = averageReview;
         this.TopReviewer = TopReviewer;
         this.Review = Review;
     }
 
-    public String getAverageReview() {
+    public int getAverageReview() {
         return averageReview;
     }
 
-    public void setAverageReview(String averageReview) {
+    public void setAverageReview(int averageReview) {
         this.averageReview = averageReview;
     }
 

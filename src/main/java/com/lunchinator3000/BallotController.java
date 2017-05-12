@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,13 +21,14 @@ public class BallotController {
 
     Date time;
     ArrayList<Voter> voters;
+    private ArrayList<IncomingRestaurant> randomRestaurants;
 
     public BallotController() {
 
     }
 
     @RequestMapping("/api/ballot/{ballotId}")
-    public ResponseEntity<Ballot> getEmployeeById (@PathVariable("ballotId") UUID ballotId) {
+    public ResponseEntity<Ballot> getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
         Ballot ballot = new Ballot(ballotId, time, voters);
 
@@ -38,7 +40,18 @@ public class BallotController {
 
         //System.out.println(result);
 
-        ballotId = UUID.randomUUID();
+        //ballotId = UUID.randomUUID();
+
+
+        RestaurantController restaurantController = new RestaurantController();
+        try {
+            randomRestaurants = restaurantController.getRestaurants();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //randomRestaurants.
+        System.out.println(randomRestaurants);
         return new ResponseEntity<Ballot>(ballot, HttpStatus.OK);
     }
 }
