@@ -1,11 +1,9 @@
 package com.lunchinator3000;
 
-import java.util.Date;
-
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantChoiceAfter extends AbstractRestaurant {
+public class RestaurantChoiceAfter extends RestaurantController.AbstractRestaurant {
     private int votes;
 
     public RestaurantChoiceAfter(int id, String name, int votes) {

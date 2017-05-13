@@ -3,7 +3,7 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantChoiceBefore extends AbstractRestaurant {
+public class RestaurantChoiceBefore extends RestaurantController.AbstractRestaurant {
     private int averageReview;
     private String description;
 

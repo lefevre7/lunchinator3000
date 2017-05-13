@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantWinner extends AbstractRestaurant {
+public class RestaurantWinner extends RestaurantController.AbstractRestaurant {
     private Date date;
     private int votes;
 

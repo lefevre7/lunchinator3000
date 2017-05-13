@@ -1,6 +1,5 @@
 package com.lunchinator3000;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -13,7 +12,7 @@ public class Ballot {
     private Date time;
     private ArrayList<Voter> voters;
 
-    private ArrayList<IncomingRestaurant> incomingRestaurants;
+    private ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants;
     private RestaurantSuggestion restaurantSuggestion;
     private ArrayList<RestaurantChoiceBefore> restaurantChoiceBefores;
     private ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters;
@@ -49,11 +48,11 @@ public class Ballot {
         this.voters = voters;
     }
 
-    public ArrayList<IncomingRestaurant> getIncomingRestaurants() {
+    public ArrayList<RestaurantController.IncomingRestaurant> getIncomingRestaurants() {
         return incomingRestaurants;
     }
 
-    public void setIncomingRestaurants(ArrayList<IncomingRestaurant> incomingRestaurants) {
+    public void setIncomingRestaurants(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
         this.incomingRestaurants = incomingRestaurants;
     }
 

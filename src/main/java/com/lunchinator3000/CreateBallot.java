@@ -3,25 +3,21 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/10/2017.
  */
-import java.io.IOException;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 @RestController
 public class CreateBallot {
     private UUID ballotId;
     private Date time;
     private ArrayList<Voter1> voters;
-    private ArrayList<IncomingRestaurant> randomRestaurants;
+    private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
 
     private final AtomicLong counter = new AtomicLong();
 
@@ -134,7 +130,7 @@ public class CreateBallot {
         private Date time;
         private ArrayList<Voter1> voters;
 
-        private ArrayList<IncomingRestaurant> incomingRestaurants;
+        private ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants;
         private RestaurantSuggestion restaurantSuggestion;
         private ArrayList<RestaurantChoiceBefore> restaurantChoiceBefores;
         private ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters;
@@ -170,11 +166,11 @@ public class CreateBallot {
             this.voters = voters;
         }
 
-        public ArrayList<IncomingRestaurant> getIncomingRestaurants() {
+        public ArrayList<RestaurantController.IncomingRestaurant> getIncomingRestaurants() {
             return incomingRestaurants;
         }
 
-        public void setIncomingRestaurants(ArrayList<IncomingRestaurant> incomingRestaurants) {
+        public void setIncomingRestaurants(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
             this.incomingRestaurants = incomingRestaurants;
         }
 

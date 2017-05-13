@@ -10,6 +10,9 @@ public class RestaurantReview {
     private int rating;
     private String review;
 
+    public RestaurantReview() {
+
+    }
     public RestaurantReview(int id, String restaurant, String reviewer, int rating, String review) {
         this.id = id;
         this.restaurant = restaurant;
