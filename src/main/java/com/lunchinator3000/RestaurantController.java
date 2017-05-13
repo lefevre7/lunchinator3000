@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.UUID;
 
@@ -94,7 +95,48 @@ public class RestaurantController {
         return averageRatings;
     }
     public RestaurantSuggestion getRestaurantSuggestion(ArrayList<Integer> averageRatings, ArrayList<ArrayList<RestaurantReview>> restaurantsReviews) {
+        // The index in the ArrayList the max rated restaurant is
+        Integer index = null;
 
-        return new RestaurantSuggestion(1, "hi", 2, "Heather", "akjsdl");
+        RestaurantReview TopReview = null;
+        // Get the max integer
+        Integer max = Collections.max(averageRatings);
+
+        // Get the max integer's index
+        for (int i = 0; i < averageRatings.size(); i++) {
+            if (max == averageRatings.get(i)) {
+                index = i;
+                break;
+            }
+        }
+        TopReview = getRestaurantSuggestionTopReviewer(index, restaurantsReviews);
+
+        //returns the id of the [first] restaurant [review of the restaurant with the index], the name of the first restaurant with that index (its name), restaurant's review with the index of the highest rating,
+        return new RestaurantSuggestion(restaurantsReviews.get(index).get(0).getId(), restaurantsReviews.get(index).get(0).getRestaurant(), averageRatings.get(index), TopReview.getReviewer(), TopReview.getReview());
+    }
+
+    public RestaurantReview getRestaurantSuggestionTopReviewer(Integer index, ArrayList<ArrayList<RestaurantReview>> restaurantsReviews) {
+        RestaurantReview restaurantReview = null;
+        //ArrayList<RestaurantReview> restaurantReviews = restaurantsReviews.get(index);
+        //Integer max = Collections.max(restaurantReviews.);
+
+        Integer max = 0;
+        int maxTemp = 0;
+        Integer index1 = 0;
+        // Find max review
+        for(int i = 0; i < restaurantsReviews.get(index).size(); i++){
+            // Find max review in restaurantsReviews.get(index)
+            if((maxTemp = restaurantsReviews.get(index).get(i).getRating()) > max)
+                max = maxTemp;
+        }
+
+        // Get the max review's index
+        for (int i = 0; i < restaurantsReviews.get(index).size(); i++) {
+            if (max == restaurantsReviews.get(index).get(i).getRating()) {
+                index1 = i;
+                break;
+            }
+        }
+        return restaurantsReviews.get(index).get(index1);
     }
 }
