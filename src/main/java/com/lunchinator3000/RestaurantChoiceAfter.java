@@ -6,6 +6,10 @@ package com.lunchinator3000;
 public class RestaurantChoiceAfter extends RestaurantController.AbstractRestaurant {
     private int votes;
 
+    public RestaurantChoiceAfter() {
+        super();
+    }
+
     public RestaurantChoiceAfter(int id, String name, int votes) {
         super(id, name);
         this.votes = votes;

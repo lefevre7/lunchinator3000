@@ -2,15 +2,14 @@ package com.lunchinator3000;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Jeremy L on 5/11/2017.
@@ -28,10 +27,10 @@ public class RestaurantController {
     ArrayList<IncomingRestaurant> getRestaurants() { //todo: this return value should probably change to the suggestion, choices, winner, and choices
         ArrayList<IncomingRestaurant> incomingRestaurants = new ArrayList<IncomingRestaurant>();
         ArrayList<IncomingRestaurant> fiveRandomRestaurants = null;
-        ArrayList<ArrayList<RestaurantReview>> restaurantsReviews1 = null;
-        ArrayList<Integer> averageRatings = null;
-        RestaurantSuggestion restaurantSuggestion = null;
-        ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = null;
+        ArrayList<ArrayList<RestaurantReview>> restaurantsReviews1 = new ArrayList<ArrayList<RestaurantReview>>();
+        ArrayList<Integer> averageRatings = new ArrayList<>();
+        RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
+        ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         JsonNode rootNode = null;
         //time = Time.valueOf()
 
@@ -108,10 +107,10 @@ public class RestaurantController {
         System.out.println(fiveRandomRestaurants.get(4).getName().toString());
         //get restaurant reviews
         System.out.println("Instantiating RestaurantReviews class");
-        RestaurantsReviews restaurantsReviews = new RestaurantsReviews();
+       // RestaurantsReviews restaurantsReviews = new RestaurantsReviews();
 
 
-        restaurantsReviews1 = restaurantsReviews.getRestaurantsReviews(fiveRandomRestaurants);
+        restaurantsReviews1 = getRestaurantsReviews(fiveRandomRestaurants);
 
         //get the average ratings for the five random restaurants
         System.out.println("Getting averageRatings");
@@ -126,12 +125,102 @@ public class RestaurantController {
 
         return fiveRandomRestaurants; //return new ResponseEntity<Ballot>(ballot, HttpStatus.OK); //this return value should probably change to the suggestion, choices, winner, and choices
     }
+    public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
+        //ArrayList<IncomingRestaurant> incomingRestaurants = null;
+        //ArrayList<RestaurantReview> restaurantReviews = new ArrayList<RestaurantReview>();
+        ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        for (int i = 0; i < incomingRestaurants.size(); i++) {
+            ArrayList<RestaurantReview> restaurantReviews = new ArrayList<RestaurantReview>();
+            System.out.println(incomingRestaurants.get(i).getName());
+            String url = "https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20");
+            System.out.println(url);
+
+            /*try {
+                restaurantReviews = mapper.readValue(new URL(url), new ArrayList<RestaurantReview>().getClass());
+            } catch (IOException e) {
+                System.out.println("The webaddress: " + url + " threw an error");
+                e.printStackTrace();
+            }*/
+
+            JsonNode rootNode = null;
+            //HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+            //requestFactory.setReadTimeout(50);
+            RestTemplate restTemplate = new RestTemplate();
+
+
+            // Prepare acceptable media type
+            List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+            acceptableMediaTypes.add(MediaType.APPLICATION_JSON); // Set what you need
+
+            // Prepare header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setAccept(acceptableMediaTypes);
+            HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+            // Send the request as GET
+            try {
+                ResponseEntity<String> result = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+                // Add to model
+                //model.addAttribute("persons", result.getBody().getData());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String tem = incomingRestaurants.get(i).getName().replaceAll(" ", "%20");
+            System.out.println(tem);
+
+            String result = restTemplate.getForObject(url, String.class);
+            if (result.equals("[]"))//could try while
+                result = restTemplate.getForObject("https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20"), String.class);
+            System.out.println(result);
+
+            URI url1 = URI.create("https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20"));
+            if (result.equals("[]"))//could try while
+                result = restTemplate.getForObject(url1, String.class);
+
+            //JSONObject json = readJsonFromUrl("https://graph.facebook.com/19292868552");
+
+
+            System.out.println("Getting incoming restaurantReviews");
+            try {
+                rootNode = mapper.readTree(result);
+                System.out.println(rootNode);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            for (int j = 0; j < rootNode.size(); j++) {
+                RestaurantReview restaurantReview = new RestaurantReview();
+                restaurantReview.setId(rootNode.get(j).get("Id").asInt());
+                restaurantReview.setRestaurant(rootNode.get(j).get("restaurant").asText());
+                restaurantReview.setReviewer(rootNode.get(j).get("reviewer").asText());
+                restaurantReview.setRating(rootNode.get(j).get("rating").asInt());
+                restaurantReview.setReview(rootNode.get(j).get("review").asText());
+                System.out.println("Here is the restaurant review");
+                System.out.println(restaurantReview);
+
+                restaurantReviews.add(restaurantReview);
+            }
+            System.out.println("Here are the reviews of the restaurants");
+            System.out.println(restaurantReviews);
+            restaurantsReviews.add(restaurantReviews);
+            //restaurantReviews.clear();
+        }
+        return restaurantsReviews;
+    }
     //can make almost all methods here private (because they're only used by this one RestaurantController class) if I have time
     public /*@ResponseBody*/
     ArrayList<IncomingRestaurant> randomlyPick5Restaurants(ArrayList<IncomingRestaurant> incomingRestaurants) {
-        ArrayList<IncomingRestaurant> randomRestaurants = incomingRestaurants;
-        Collections.shuffle(randomRestaurants);
-        randomRestaurants = (ArrayList<IncomingRestaurant>) randomRestaurants.subList(0, 4);
+        ArrayList<IncomingRestaurant> randomTemp = incomingRestaurants;
+        ArrayList<IncomingRestaurant> randomRestaurants = new ArrayList<>();
+        Collections.shuffle(randomTemp);
+        for (int i = 0; i < 5; i++)
+            randomRestaurants.add(randomTemp.get(i));
+
         return randomRestaurants;
     }
 
@@ -139,10 +228,15 @@ public class RestaurantController {
         ArrayList<Integer> averageRatings = new ArrayList<>();
         Integer averageRating = 0;
         Float actualAverageRating = Float.valueOf(0);
+        int restaurantsReviewsSize = restaurantsReviews.size();
 
-        for (int i = 0; i < restaurantsReviews.size(); i++) {
-            for (int j = 0; j < restaurantsReviews.get(i).size(); j++) {
-                averageRating += restaurantsReviews.get(i).get(j).getRating();
+
+
+        for (int i = 0; i < restaurantsReviewsSize; i++) {
+            int restaurantReviewsSize = restaurantsReviews.get(i).size();
+            for (int j = 0; j < restaurantReviewsSize; j++) {
+                int rating = restaurantsReviews.get(i).get(j).getRating();
+                averageRating = averageRating + rating;
             }
             actualAverageRating = averageRating.floatValue() / (restaurantsReviews.get(i).size() - 1);
             averageRating = Math.round(actualAverageRating);

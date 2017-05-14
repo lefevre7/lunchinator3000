@@ -7,6 +7,10 @@ public class RestaurantChoiceBefore extends RestaurantController.AbstractRestaur
     private int averageReview;
     private String description;
 
+    public RestaurantChoiceBefore() {
+        super();
+    }
+
     public RestaurantChoiceBefore(int id, String name, int averageReview, String description) {
         super(id, name);
         this.averageReview = averageReview;

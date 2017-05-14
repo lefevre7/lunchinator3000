@@ -9,6 +9,10 @@ public class RestaurantWinner extends RestaurantController.AbstractRestaurant {
     private Date date;
     private int votes;
 
+    public RestaurantWinner() {
+        super();
+    }
+
     public RestaurantWinner(int id, String name, Date date, int votes) {
         super(id, name);
         this.date = date;

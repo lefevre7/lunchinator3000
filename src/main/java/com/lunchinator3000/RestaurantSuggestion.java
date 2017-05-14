@@ -8,6 +8,10 @@ public class RestaurantSuggestion extends RestaurantController.AbstractRestauran
     private String TopReviewer;
     private String Review;
 
+    public RestaurantSuggestion() {
+        super();
+    }
+
     public RestaurantSuggestion(int id, String name, int averageReview, String TopReviewer, String Review) {
         super(id, name);
         this.averageReview = averageReview;
