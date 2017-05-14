@@ -31,25 +31,15 @@ public class RestaurantController {
         ArrayList<Integer> averageRatings = new ArrayList<>();
         RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
+        ArrayList<RestaurantChoiceBefore> restaurantChoicesAfter = new ArrayList<>();
+        RestaurantWinner restaurantWinner = new RestaurantWinner();
         JsonNode rootNode = null;
         //time = Time.valueOf()
 
         ObjectMapper mapper = new ObjectMapper();
 
         RestTemplate restTemplate = new RestTemplate();
-        ////Ballot ballot = new Ballot();
         String result = restTemplate.getForObject("https://interview-project-17987.herokuapp.com/api/restaurants", String.class);
-
-
-        //String result = "{'name' : 'mkyong'}";
-        //result.replaceAll("\\[", "").replaceAll("\\]", "");
-
-        /*try {
-            incomingRestaurants = new ObjectMapper().readValue(result, new ArrayList<IncomingRestaurant>().getClass());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
 
         System.out.println("Getting incomming restaurants");
         try {
@@ -74,27 +64,9 @@ public class RestaurantController {
             incomingRestaurants.add(incomingRestaurant);
         }
 
-
-        /*try {
-            incomingRestaurants = mapper.readValue(new URL("https://interview-project-17987.herokuapp.com/api/restaurants"), ArrayList.class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
-        ////Ballot ballot = restTemplate.getForObject(uri, ballot);
-
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        //HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-
-        //ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-
-
         //System.out.println(result);
         System.out.println("Trying to print incomingRestaurants");
         System.out.println(incomingRestaurants);
-
-        //ballotId = UUID.randomUUID();
 
         //get the five random restaurants
         System.out.println("Getting 5 random restaurants");
@@ -120,11 +92,25 @@ public class RestaurantController {
         // We need averageRatings to get the average rating and restarantsReviews to get what the reviewers say
         restaurantSuggestion = getRestaurantSuggestion(averageRatings, restaurantsReviews1);
         restaurantChoicesBefore = getRestaurantChoiceBefore(averageRatings, fiveRandomRestaurants);
+        Collections.shuffle(restaurantChoicesBefore);// restaurantChoicesBefore are now randomized
+
+        VoteController voteController = new VoteController();
+        HashMap<String,Vote> votes = voteController.getVotes();
+
+        restaurantChoicesAfter = getRestaurantChoicesAfter();
+        restaurantWinner = findRestaurantWinner(votes, restaurantChoicesBefore);
+
+
 
         //todo: make variables and methods for the RestaurantChoiceBefore, After, and Winner too
 
-        return fiveRandomRestaurants; //return new ResponseEntity<Ballot>(ballot, HttpStatus.OK); //this return value should probably change to the suggestion, choices, winner, and choices
+        return fiveRandomRestaurants; //return new ResponseEntity<Ballot>(ballot, HttpStatus.OK); //todo: this return value should probably change to the suggestion, choices, winner, and choices (aka BallotBeforeOrAfter)
     }
+
+    public RestaurantWinner findRestaurantWinner(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
+        votes.values().
+    }
+
     public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
         //ArrayList<IncomingRestaurant> incomingRestaurants = null;
         //ArrayList<RestaurantReview> restaurantReviews = new ArrayList<RestaurantReview>();

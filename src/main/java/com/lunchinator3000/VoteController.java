@@ -18,10 +18,20 @@ public class VoteController {
     //UUID ballotId;
     //Time time;
     //ArrayList<Voter> voters;
-    HashMap<String,Vote> votes = new HashMap<String,Vote>();// todo needs to be in a public HashMap<String,Vote> getVotes {}
+    private static HashMap<String,Vote> votes = null;// todo needs to be in a public HashMap<String,Vote> getVotes {}
     // (in a singleton way) (if there isn't one, then create one)
     // that makes a new one of them each day
 
+    // Provides a global point of access
+    public static HashMap<String,Vote> getVotes() {
+
+        if (votes == null) {
+            votes = new HashMap<String,Vote>();
+        }
+        return votes;
+    }
+
+    // Prevents any other class from instantiating it
     public VoteController() {
     }
 
@@ -34,9 +44,12 @@ public class VoteController {
         String string = "hi";
         System.out.println(string);
 
-        //todo check if the individual request params are correct (and send the appropriate response if not)
+        // This is the correct way to get the votes
+        VoteController voteController = new VoteController();
+        HashMap<String,Vote> votes = voteController.getVotes();
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
+
         if (votes.containsKey(emailAddress)) //votes needs to be getVotes
             votes.replace(emailAddress, vote); //votes needs to be getVotes
         else
