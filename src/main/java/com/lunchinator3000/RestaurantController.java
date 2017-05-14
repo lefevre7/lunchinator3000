@@ -8,8 +8,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Jeremy L on 5/11/2017.
@@ -31,7 +31,7 @@ public class RestaurantController {
         ArrayList<Integer> averageRatings = new ArrayList<>();
         RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
-        ArrayList<RestaurantChoiceBefore> restaurantChoicesAfter = new ArrayList<>();
+        ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
         RestaurantWinner restaurantWinner = new RestaurantWinner();
         JsonNode rootNode = null;
         //time = Time.valueOf()
@@ -92,13 +92,14 @@ public class RestaurantController {
         // We need averageRatings to get the average rating and restarantsReviews to get what the reviewers say
         restaurantSuggestion = getRestaurantSuggestion(averageRatings, restaurantsReviews1);
         restaurantChoicesBefore = getRestaurantChoiceBefore(averageRatings, fiveRandomRestaurants);
-        Collections.shuffle(restaurantChoicesBefore);// restaurantChoicesBefore are now randomized
+
+        //Collections.shuffle(restaurantChoicesBefore);// restaurantChoicesBefore are now randomized // do this when you put it in the object that gets sent back to the user
 
         VoteController voteController = new VoteController();
         HashMap<String,Vote> votes = voteController.getVotes();
 
-        restaurantChoicesAfter = getRestaurantChoicesAfter();
-        restaurantWinner = findRestaurantWinner(votes, restaurantChoicesBefore);
+        restaurantChoicesAfter = getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
+        //restaurantWinner = findRestaurantWinner(votes, restaurantChoicesBefore);
 
 
 
@@ -106,10 +107,38 @@ public class RestaurantController {
 
         return fiveRandomRestaurants; //return new ResponseEntity<Ballot>(ballot, HttpStatus.OK); //todo: this return value should probably change to the suggestion, choices, winner, and choices (aka BallotBeforeOrAfter)
     }
+    public ArrayList<RestaurantChoiceAfter> getRestaurantChoicesAfter(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
+        ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
+        ArrayList<Vote> actualVotes = new ArrayList<Vote>(votes.values());
+        ArrayList<Integer> individualVotes = new ArrayList<Integer>();
+        HashMap<String, Integer> restaurantVotes = new HashMap<>();
+        ArrayList<AtomicInteger> atomicInteger = new ArrayList<>();
 
-    public RestaurantWinner findRestaurantWinner(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
-        votes.values().
+        // Get the restaurantId into the individualVotes array indexed by how the votes came in
+        for(int i = 0; i < actualVotes.size(); i++) {
+            individualVotes.add(actualVotes.get(i).getRestaurantId());
+        }
+
+        // When a vote equals a before-choice-restaurant's id, then set it in a hashmap that has the restaurant's name
+        // as the key, and a counter that goes with (is dependant on) the order of the restaurantChoicesBefore's rests
+        for(int i = 0; i < individualVotes.size(); i++){
+            for (int j = 0; j < restaurantChoicesBefore.size(); j++)
+            if (individualVotes.get(i) == restaurantChoicesBefore.get(j).getId()){
+                if(restaurantVotes.containsKey(restaurantChoicesBefore.get(j).getName()))
+                    //stored the restaurants now by their names (not id's)
+                    restaurantVotes.replace(restaurantChoicesBefore.get(j).getName(), atomicInteger.get(j).getAndIncrement());
+                else
+                    restaurantVotes.put(restaurantChoicesBefore.get(j).getName(), atomicInteger.get(j).getAndIncrement());
+            }
+
+
+        }
+        return restaurantChoicesAfter;
     }
+
+    /*public RestaurantWinner findRestaurantWinner(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
+        votes.values().
+    }*/
 
     public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
         //ArrayList<IncomingRestaurant> incomingRestaurants = null;
