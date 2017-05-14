@@ -16,36 +16,45 @@ import java.util.UUID;
 @RestController
 public class BallotController {
 
-    Date time;
-    ArrayList<Voter> voters;
+    //Date time;
+    //ArrayList<CreateBallot.Voter1> voters;
     private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
+    private RestaurantSuggestion restaurantSuggestion;
+    private CreateBallot.BallotBeforeOrAfter ballotBeforeOrAfter;
+
 
     public BallotController() {
 
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
-    public /*ResponseEntity<*/Ballot/*>*/ getBallot (@PathVariable("ballotId") UUID ballotId) {
+    public /*ResponseEntity<*/CreateBallot.BallotBeforeOrAfter/*>*/ getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
-        Ballot ballot = new Ballot(ballotId, time, voters);
+        CreateBallot createBallot = new CreateBallot();
+        CreateBallot.Ballot1 ballot = createBallot.getBallot();
 
-
-        RestTemplate restTemplate = new RestTemplate();
-        //Ballot ballot = new Ballot();
-        //String result = restTemplate.getForObject(uri, String.class);
-        //Ballot ballot = restTemplate.getForObject(uri, ballot);
-
-        //System.out.println(result);
-
-        //ballotId = UUID.randomUUID();
 
         System.out.println("Creating new restaurant controller");
         RestaurantController restaurantController = new RestaurantController();
         randomRestaurants = restaurantController.getRestaurants();
+        //restaurantSuggestion = restaurantController.getRestaurantSuggestion()
+
 
 
         //randomRestaurants.
         System.out.println(randomRestaurants);
-        return /*new ResponseEntity<Ballot>(*/ballot/*, HttpStatus.OK)*/;
+
+        // Implement this pseudo code
+        //if (ballot.getTime() > new Date().getTime())
+            //then stick it into the ballotBeforeOrAfter object and return it
+        //return  ;
+        //else
+        // stick stick stuff into the ballotBeforeOrAfter object and return it
+        //return  ;
+
+
+
+
+        return ballotBeforeOrAfter;
     }
 }

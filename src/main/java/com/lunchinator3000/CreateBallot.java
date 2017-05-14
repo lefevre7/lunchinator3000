@@ -12,12 +12,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.lunchinator3000.CreateBallot.Ballot1.getBallot1;
+
 @RestController
 public class CreateBallot {
     private UUID ballotId;
-    private Date time;
-    private ArrayList<Voter1> voters;
-    private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
+    //private Date time;
+    //private ArrayList<Voter1> voters;
+    //private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
+    //private Ballot1 ballot11 = getBallot1(); // So this CreateBallot class can be in-charge of the ballot
 
     private final AtomicLong counter = new AtomicLong();
 
@@ -28,29 +31,17 @@ public class CreateBallot {
         String ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}"; // Format it like JSON
         return new ResponseEntity<String>(ballotId, HttpStatus.CREATED);
     }
-    public Ballot1 getNewBallot(InitialBallot1 initialBallot) {
-        final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants";
+    private Ballot1 getNewBallot(InitialBallot1 initialBallot) { //Ballot1 ballot1 = createBallot.getBallot() is how you access the ballot
         ballotId = UUID.randomUUID();
+        Ballot1 ballot1 = getBallot1();
+        ballot1.setBallotId(ballotId);
+        ballot1.setTime(initialBallot.getTime());
+        ballot1.setVoters(initialBallot.getVoters());
+        return ballot1; //new Ballot1(ballotId, initialBallot.getTime(), initialBallot.getVoters());
+    }
 
-        /*RestaurantController restaurantController = new RestaurantController();
-        try {
-            randomRestaurants = restaurantController.getRestaurants();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println(randomRestaurants);*/
-
-
-        //time = Time.valueOf()
-
-        //RestTemplate restTemplate = new RestTemplate();
-        //Ballot ballot = new Ballot();
-        //String result = restTemplate.getForObject(uri, String.class);
-        //Ballot ballot = restTemplate.getForObject(uri, ballot);
-
-        //System.out.println(result);
-        return new Ballot1(ballotId, initialBallot.getTime(), initialBallot.getVoters());
+    public Ballot1 getBallot() { //CreateBallot creatBallot; Ballot1 ballot1 = createBallot.getBallot(); is how you access the ballot
+        return getBallot1();
     }
 
     /**
@@ -129,17 +120,31 @@ public class CreateBallot {
         private UUID ballotId;
         private Date time;
         private ArrayList<Voter1> voters;
+        private static Ballot1 ballot1;
 
-        private ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants;
-        private RestaurantSuggestion restaurantSuggestion;
-        private ArrayList<RestaurantChoiceBefore> restaurantChoiceBefores;
-        private ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters;
-        private RestaurantWinner restaurantWinner;
+        //private BallotAfter ballotAfter;
+        //private BallotBefore ballotBefore;
 
-        public Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters) {
+        private BallotBeforeOrAfter ballotBeforeOrAfter;
+
+        private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters) {
             this.ballotId = ballotId;
             this.time = time;
             this.voters = voters;
+        }
+
+        // Prevents any other class from instantiating it
+        private Ballot1() {
+        }
+
+        // Provides a global point of access
+        public static Ballot1 getBallot1() {
+
+            //todo: include the daily new making logic here or maybe in getNewBallot()
+            if (null == ballot1) {
+                ballot1 = new Ballot1();
+            }
+            return ballot1;
         }
 
         public UUID getBallotId() {
@@ -166,46 +171,88 @@ public class CreateBallot {
             this.voters = voters;
         }
 
-        public ArrayList<RestaurantController.IncomingRestaurant> getIncomingRestaurants() {
-            return incomingRestaurants;
+        public BallotBeforeOrAfter getBallotBeforeOrAfter() {
+            return ballotBeforeOrAfter;
         }
 
-        public void setIncomingRestaurants(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
-            this.incomingRestaurants = incomingRestaurants;
+        public void setBallotBeforeOrAfter(BallotBeforeOrAfter ballotBeforeOrAfter) {
+            this.ballotBeforeOrAfter = ballotBeforeOrAfter;
         }
 
-        public RestaurantSuggestion getRestaurantSuggestion() {
-            return restaurantSuggestion;
+
+        /*public BallotAfter getBallotAfter() {
+            return ballotAfter;
         }
 
-        public void setRestaurantSuggestion(RestaurantSuggestion restaurantSuggestion) {
-            this.restaurantSuggestion = restaurantSuggestion;
+        public void setBallotAfter(BallotAfter ballotAfter) {
+            this.ballotAfter = ballotAfter;
         }
 
-        public ArrayList<RestaurantChoiceBefore> getRestaurantChoiceBefores() {
-            return restaurantChoiceBefores;
+        public BallotBefore getBallotBefore() {
+            return ballotBefore;
         }
 
-        public void setRestaurantChoiceBefores(ArrayList<RestaurantChoiceBefore> restaurantChoiceBefores) {
-            this.restaurantChoiceBefores = restaurantChoiceBefores;
+        public void setBallotBefore(BallotBefore ballotBefore) {
+            this.ballotBefore = ballotBefore;
+        }*/
+    }
+
+    /**
+     *  This class' ArrayList will hold the winner and the choices after time is up for the ballot so that it can
+     *  display anytype of AbstractRestaurant and return it in one object
+     */
+    public static class BallotBeforeOrAfter {
+        private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBeforeOrAfter;
+
+        public BallotBeforeOrAfter(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBeforeOrAfter) {
+            this.ballotBeforeOrAfter = ballotBeforeOrAfter;
         }
 
-        public ArrayList<RestaurantChoiceAfter> getRestaurantChoiceAfters() {
-            return restaurantChoiceAfters;
+        public ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> getBallotBeforeOrAfter() {
+            return ballotBeforeOrAfter;
         }
 
-        public void setRestaurantChoiceAfters(ArrayList<RestaurantChoiceAfter> restaurantChoiceAfters) {
-            this.restaurantChoiceAfters = restaurantChoiceAfters;
-        }
-
-        public RestaurantWinner getRestaurantWinner() {
-            return restaurantWinner;
-        }
-
-        public void setRestaurantWinner(RestaurantWinner restaurantWinner) {
-            this.restaurantWinner = restaurantWinner;
+        public void setBallotBeforeOrAfter(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBeforeOrAfter) {
+            this.ballotBeforeOrAfter = ballotBeforeOrAfter;
         }
     }
 
+    /**
+     *  This class' ArrayList will hold the suggestion and the choices before time is up for the ballot so that it can
+     *  display anytype of AbstractRestaurant and return it in one object
+     */
+    /*public static class BallotBefore {
+        private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> before;
 
+        public BallotBefore(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> before) {
+            this.before = before;
+        }
+
+        public ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> getBefore() {
+            return before;
+        }
+
+        public void setBefore(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> before) {
+            this.before = before;
+        }
+    }*/
+
+    /**
+     *  This class' ArrayList will hold the winner and the choices after time is up for the ballot so that it can
+     *  display anytype of AbstractRestaurant and return it in one object
+     */
+    /*public static class BallotAfter {
+        private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> after;
+
+        public BallotAfter(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> after) {
+            this.after = after;
+        }
+
+        public ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> getAfter() {
+            return after;
+        }
+
+        public void setAfter(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> after) {
+            this.after = after;
+        }*/
 }
