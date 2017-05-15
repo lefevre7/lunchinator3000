@@ -28,7 +28,7 @@ public class BallotController {
     private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
 
     //private RestaurantController.RestaurantChoices restaurantChoicesAfter1;
-    private static HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices> ballotBeforeOrAfter1;
+    private static HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices/*RestaurantController.RestaurantChoices*/> ballotBeforeOrAfter1;
 
 
     public BallotController() {
@@ -63,8 +63,10 @@ public class BallotController {
 
         restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews);
         restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
-        restaurantChoicesBefore1 = (RestaurantController.RestaurantChoices) restaurantChoicesBefore;
 
+        for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
+            restaurantChoicesBefore1.getRestaurantChoices().add(restaurantChoicesBefore.get(i));
+        }
 
 
         // Getting the most current date and time as possible

@@ -17,7 +17,7 @@ import static com.lunchinator3000.CreateBallot.Ballot1.getBallot1;
 @RestController
 public class CreateBallot {
     private UUID ballotId;
-    //private Date time;
+    private Date endTime;
     //private ArrayList<Voter1> voters;
     //private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
     //private Ballot1 ballot11 = getBallot1(); // So this CreateBallot class can be in-charge of the ballot
@@ -35,8 +35,19 @@ public class CreateBallot {
         ballotId = UUID.randomUUID();
         Ballot1 ballot1 = getBallot1();
         ballot1.setBallotId(ballotId);
-        ballot1.setTime(initialBallot.getTime());
+
+        endTime = initialBallot.getTime();
+        ballot1.setTime(null/*initialBallot.getTime()*/);
+
+        System.out.println("Here is the initialBallot time");
+        System.out.println(endTime);
+
         ballot1.setVoters(initialBallot.getVoters());
+
+        System.out.println("Here is what getBallot1() does");
+        Ballot1 anotherBallot = getBallot1();
+        System.out.println(anotherBallot);
+
         return ballot1; //new Ballot1(ballotId, initialBallot.getTime(), initialBallot.getVoters());
     }
 
@@ -49,12 +60,12 @@ public class CreateBallot {
      * there needs to be an inner static class that looks like the object and that has an empty constructor.
      */
     public static class InitialBallot1 {
-        private Date time;
+        private Date endTime;
         private ArrayList<Voter1> voters;
 
-        public InitialBallot1(Date time, ArrayList<Voter1> voters) {
+        public InitialBallot1(Date endTime, ArrayList<Voter1> voters) {
             this.voters = voters;
-            this.time = time;
+            this.endTime = endTime;
         }
         public InitialBallot1() {
 
@@ -69,11 +80,11 @@ public class CreateBallot {
         }
 
         public Date getTime() {
-            return time;
+            return endTime;
         }
 
         public void setTime(Date time) {
-            this.time = time;
+            this.endTime = time;
         }
     }
 
@@ -83,11 +94,11 @@ public class CreateBallot {
      */
     public static class Voter1 {
         private String name;
-        private String email;
+        private String emailAddress;
 
         public Voter1(String name, String email) {
             this.name = name;
-            this.email = email;
+            this.emailAddress = email;
         }
 
         public Voter1() {
@@ -103,11 +114,11 @@ public class CreateBallot {
         }
 
         public String getEmail() {
-            return email;
+            return emailAddress;
         }
 
         public void setEmail(String email) {
-            this.email = email;
+            this.emailAddress = email;
         }
     }
 
@@ -118,7 +129,7 @@ public class CreateBallot {
      */
     public static class Ballot1 {
         private UUID ballotId;
-        private Date time;
+        private Date endTime;
         private ArrayList<Voter1> voters;
         private static Ballot1 ballot1;
 
@@ -129,7 +140,7 @@ public class CreateBallot {
 
         private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters) {
             this.ballotId = ballotId;
-            this.time = time;
+            this.endTime = time;
             this.voters = voters;
         }
 
@@ -156,11 +167,11 @@ public class CreateBallot {
         }
 
         public Date getTime() {
-            return time;
+            return endTime;
         }
 
         public void setTime(Date time) {
-            this.time = time;
+            this.endTime = time;
         }
 
         public ArrayList<Voter1> getVoters() {

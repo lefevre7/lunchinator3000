@@ -3,7 +3,7 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantChoiceBefore implements RestaurantController.AbstractRestaurant {
+public class RestaurantChoiceBefore implements RestaurantController.RestaurantChoice {
     private int averageReview;
     private String description;
     private String name;
@@ -39,22 +39,18 @@ public class RestaurantChoiceBefore implements RestaurantController.AbstractRest
         return 0;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public int getId() {
         return id;
     }
 
-    @Override
     public void setId(int id) {
         this.id = id;
     }

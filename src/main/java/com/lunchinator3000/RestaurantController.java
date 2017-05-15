@@ -36,6 +36,7 @@ public class RestaurantController {
         RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
+
         RestaurantWinner restaurantWinner = new RestaurantWinner();
         JsonNode rootNode = null;
         //time = Time.valueOf()
@@ -489,12 +490,16 @@ public class RestaurantController {
     }
 
     public interface RestaurantChoices {
-        ArrayList<RestaurantChoices> restaurantChoices = null;
+        ArrayList<RestaurantChoice> restaurantChoices = null;
 
-        public ArrayList<RestaurantChoices> getRestaurantChoices();
+        public ArrayList<RestaurantChoice> getRestaurantChoices();
 
-        public void setRestaurantChoices(ArrayList<RestaurantController.RestaurantChoices> restaurantChoices);
-}
+        public void setRestaurantChoices(ArrayList<RestaurantChoice> restaurantChoices);
+    }
+
+    public interface RestaurantChoice {
+
+    }
 
 
     /**
