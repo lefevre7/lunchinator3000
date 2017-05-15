@@ -3,6 +3,10 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/10/2017.
  */
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -17,27 +21,39 @@ import static com.lunchinator3000.CreateBallot.Ballot1.getBallot1;
 @RestController
 public class CreateBallot {
     private UUID ballotId;
-    private Date endTime;
+    private String endTime;
     //private ArrayList<Voter1> voters;
     //private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
     //private Ballot1 ballot11 = getBallot1(); // So this CreateBallot class can be in-charge of the ballot
 
     private final AtomicLong counter = new AtomicLong();
 
-    @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+    @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, headers="Accept=application/json", consumes = "application/json", produces = "application/json")
     public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot) {
+        String ballotId = null;
+        System.out.println("Here is the initialBallot");
+        System.out.println(initialBallot.getEndTime());
+        System.out.println(initialBallot.getVoters().get(0).getName());
+        System.out.println(initialBallot.getVoters().get(0).getEmailAddress());
 
-        Ballot1 ballot = getNewBallot(initialBallot);
-        String ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}"; // Format it like JSON
+        Ballot1 ballot = null;
+        try {
+            ballot = getNewBallot(initialBallot);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            ballotId = "Time in the wrong format (supposed to be: MM/dd/YYY HH:mm)";
+        }
+        ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}"; // Format it like JSON
         return new ResponseEntity<String>(ballotId, HttpStatus.CREATED);
     }
-    private Ballot1 getNewBallot(InitialBallot1 initialBallot) { //Ballot1 ballot1 = createBallot.getBallot() is how you access the ballot
+    private Ballot1 getNewBallot(InitialBallot1 initialBallot) throws ParseException { //Ballot1 ballot1 = createBallot.getBallot() is how you access the ballot
         ballotId = UUID.randomUUID();
         Ballot1 ballot1 = getBallot1();
         ballot1.setBallotId(ballotId);
 
-        endTime = initialBallot.getTime();
-        ballot1.setTime(null/*initialBallot.getTime()*/);
+        endTime = initialBallot.getEndTime();
+        Date date = new SimpleDateFormat("MM/dd/yy HH:mm").parse(endTime);
+        ballot1.setTime(date);
 
         System.out.println("Here is the initialBallot time");
         System.out.println(endTime);
@@ -60,10 +76,10 @@ public class CreateBallot {
      * there needs to be an inner static class that looks like the object and that has an empty constructor.
      */
     public static class InitialBallot1 {
-        private Date endTime;
+        private String endTime;
         private ArrayList<Voter1> voters;
 
-        public InitialBallot1(Date endTime, ArrayList<Voter1> voters) {
+        public InitialBallot1(String endTime, ArrayList<Voter1> voters) {
             this.voters = voters;
             this.endTime = endTime;
         }
@@ -79,11 +95,11 @@ public class CreateBallot {
             this.voters = voters;
         }
 
-        public Date getTime() {
+        public String getEndTime() {
             return endTime;
         }
 
-        public void setTime(Date time) {
+        public void setEndTime(String time) {
             this.endTime = time;
         }
     }
@@ -113,11 +129,11 @@ public class CreateBallot {
             this.name = name;
         }
 
-        public String getEmail() {
+        public String getEmailAddress() {
             return emailAddress;
         }
 
-        public void setEmail(String email) {
+        public void setEmailAddress(String email) {
             this.emailAddress = email;
         }
     }
