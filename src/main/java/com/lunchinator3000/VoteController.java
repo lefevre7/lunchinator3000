@@ -18,7 +18,7 @@ public class VoteController {
     //UUID ballotId;
     //Time time;
     //ArrayList<Voter> voters;
-    private static HashMap<String,Vote> votes = null;// todo needs to be in a public HashMap<String,Vote> getVotes {}
+    private static HashMap<String,Vote> votes = null;
     // (in a singleton way) (if there isn't one, then create one)
     // that makes a new one of them each day
 

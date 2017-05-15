@@ -3,16 +3,18 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantChoiceBefore extends RestaurantController.AbstractRestaurant {
+public class RestaurantChoiceBefore implements RestaurantController.AbstractRestaurant {
     private int averageReview;
     private String description;
+    private String name;
+    private Integer id;
 
     public RestaurantChoiceBefore() {
-        super();
     }
 
     public RestaurantChoiceBefore(int id, String name, int averageReview, String description) {
-        super(id, name);
+        this.name = name;
+        this.id = id;
         this.averageReview = averageReview;
         this.description = description;
     }
@@ -35,5 +37,25 @@ public class RestaurantChoiceBefore extends RestaurantController.AbstractRestaur
 
     public int findAverageReview(RestaurantReview restaurantReview){
         return 0;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 }

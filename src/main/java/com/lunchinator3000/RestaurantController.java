@@ -18,10 +18,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RestController
 public class RestaurantController {
     private UUID ballotId;
+    private Date time;
     //private ArrayList<IncomingRestaurant> incomingRestaurants;
 
     public RestaurantController() {
-
+    }
+    public RestaurantController(Date time) {
+        this.time = time;
     }
 
     public @ResponseBody
@@ -100,7 +103,7 @@ public class RestaurantController {
         HashMap<String,Vote> votes = voteController.getVotes();
 
         restaurantChoicesAfter = getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
-        restaurantWinner = getRestaurantWinner(votes, restaurantChoicesBefore);
+        restaurantWinner = getRestaurantWinner(restaurantChoicesAfter);
 
 
 
@@ -187,8 +190,31 @@ public class RestaurantController {
         return restaurantChoicesAfter;
     }
 
-    public RestaurantWinner getRestaurantWinner(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
-        votes.values().
+    public RestaurantWinner getRestaurantWinner(ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter){
+        RestaurantWinner restaurantWinner = new RestaurantWinner();
+        Integer max = 0;
+        Integer maxTemp = 0;
+        Integer index = null;
+
+        // Find max votes in a RestaurantChoiceAfter
+        for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
+            // Find max review in restaurantsReviews.get(index)
+            if ((maxTemp = restaurantChoicesAfter.get(i).getVotes()) > max)
+                max = maxTemp;
+        }
+
+        // Get the max review's index
+        for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
+            if (max == restaurantChoicesAfter.get(i).getVotes()) {
+                index = i;
+                break;
+            }
+        }
+        restaurantWinner.setId(restaurantChoicesAfter.get(index).getId());
+        restaurantWinner.setDate(time);
+        restaurantWinner.setName(restaurantChoicesAfter.get(index).getName());
+        restaurantWinner.setVotes(restaurantChoicesAfter.get(index).getVotes());
+        return restaurantWinner;
     }
 
     public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
@@ -377,7 +403,7 @@ public class RestaurantController {
 
         Integer max = 0;
         int maxTemp = 0;
-        Integer index1 = 0;
+        Integer index1 = null;
         // Find max review
         for (int i = 0; i < restaurantsReviews.get(index).size(); i++) {
             // Find max review in restaurantsReviews.get(index)
@@ -397,16 +423,29 @@ public class RestaurantController {
 
     public ArrayList<RestaurantChoiceBefore> getRestaurantChoiceBefore(ArrayList<Integer> averageRatings, ArrayList<IncomingRestaurant> fiveRandomRestaurants) {
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
-        for (int i = 0; i < 5; i++)
-            restaurantChoicesBefore.add(new RestaurantChoiceBefore(fiveRandomRestaurants.get(i).getId(), fiveRandomRestaurants.get(i).getName(), averageRatings.get(i), fiveRandomRestaurants.get(i).getDescription()));
-
+        for (int i = 0; i < 5; i++) {
+            RestaurantChoiceBefore restaurantChoiceBefore = new RestaurantChoiceBefore();
+            restaurantChoiceBefore.setId(fiveRandomRestaurants.get(i).getId());
+            restaurantChoiceBefore.setName(fiveRandomRestaurants.get(i).getName());
+            restaurantChoiceBefore.setAverageReview(averageRatings.get(i));
+            restaurantChoiceBefore.setDescription(fiveRandomRestaurants.get(i).getDescription());
+            restaurantChoicesBefore.add(restaurantChoiceBefore);//new RestaurantChoiceBefore(fiveRandomRestaurants.get(i).getId(), fiveRandomRestaurants.get(i).getName(), averageRatings.get(i), fiveRandomRestaurants.get(i).getDescription()));
+        }
         return restaurantChoicesBefore;
+    }
+
+    public Date getTime() {
+        return time;
+    }
+
+    public void setTime(Date time) {
+        this.time = time;
     }
 
     /**
      * Created by Jeremy L on 5/11/2017.
      */
-    abstract static class AbstractRestaurant {
+    /*abstract static class AbstractRestaurant {
         private String name;
         private int id;
 
@@ -433,22 +472,47 @@ public class RestaurantController {
         public void setId(int id) {
             this.id = id;
         }
+    }*/
+
+    public interface AbstractRestaurant {
+        String name = "";
+        Integer id = null;
+
+
+        public String getName();
+
+        public void setName(String name);
+
+        public int getId();
+
+        public void setId(int id);
     }
+
+    public interface RestaurantChoices {
+        ArrayList<RestaurantChoices> restaurantChoices = null;
+
+        public ArrayList<RestaurantChoices> getRestaurantChoices();
+
+        public void setRestaurantChoices(ArrayList<RestaurantController.RestaurantChoices> restaurantChoices);
+}
+
 
     /**
      * Created by Jeremy L on 5/11/2017.
      */
-    public static class IncomingRestaurant extends AbstractRestaurant {
+    public static class IncomingRestaurant implements AbstractRestaurant {
         private String waitTimeMinutes;
         private String description;
+        private String name;
+        private Integer id;
 
         public IncomingRestaurant() {
-            super();
 
         }
 
         public IncomingRestaurant(int id, String name, String waitTimeMinutes, String description) {
-            super(id, name);
+            this.name = name;
+            this.id = id;
             this.waitTimeMinutes = waitTimeMinutes;
             this.description = description;
         }
@@ -467,6 +531,26 @@ public class RestaurantController {
 
         public void setWaitTimeMinutes(String waitTimeMinutes) {
             this.waitTimeMinutes = waitTimeMinutes;
+        }
+
+        @Override
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public void setId(int id) {
+            this.id = id;
         }
     }
 }

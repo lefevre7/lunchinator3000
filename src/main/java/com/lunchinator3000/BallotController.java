@@ -6,8 +6,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -16,11 +19,16 @@ import java.util.UUID;
 @RestController
 public class BallotController {
 
-    //Date time;
+    Date time;
     //ArrayList<CreateBallot.Voter1> voters;
     private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
     private RestaurantSuggestion restaurantSuggestion;
     private CreateBallot.BallotBeforeOrAfter ballotBeforeOrAfter;
+    private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBefore;
+    private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
+
+    //private RestaurantController.RestaurantChoices restaurantChoicesAfter1;
+    private static HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices> ballotBeforeOrAfter1;
 
 
     public BallotController() {
@@ -30,19 +38,65 @@ public class BallotController {
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
     public /*ResponseEntity<*/CreateBallot.BallotBeforeOrAfter/*>*/ getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
+        ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
+        ArrayList<Integer> averageRatings = new ArrayList<>();
+        RestaurantController.AbstractRestaurant restaurantSuggestion = new RestaurantSuggestion();
+        //ArrayList<RestaurantController.AbstractRestaurant> restaurantSuggestions = new ArrayList<>();
+
+        ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
+        ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
+        RestaurantController.RestaurantChoices restaurantChoicesAfter1 = new RestaurantChoicesAfter();
+        RestaurantController.RestaurantChoices restaurantChoicesBefore1 = new RestaurantChoicesBefore();
+
+        RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
+        //ArrayList<RestaurantController.AbstractRestaurant> restaurantWinners = new ArrayList<>();
+
         CreateBallot createBallot = new CreateBallot();
         CreateBallot.Ballot1 ballot = createBallot.getBallot();
 
 
         System.out.println("Creating new restaurant controller");
-        RestaurantController restaurantController = new RestaurantController();
+        RestaurantController restaurantController = new RestaurantController(time);
         randomRestaurants = restaurantController.getRestaurants();
-        //restaurantSuggestion = restaurantController.getRestaurantSuggestion()
+        restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
+        averageRatings = restaurantController.getAverageRestaurantRating(restaurantsReviews);
 
+        restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews);
+        restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
+        restaurantChoicesBefore1 = (RestaurantController.RestaurantChoices) restaurantChoicesBefore;
+
+
+
+        // Getting the most current date and time as possible
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/YYYY HH:mm");
+        Date date = new Date();
+        dateFormat.format(date);
+
+        Date ballotDate = ballot.getTime();
+        dateFormat.format(ballotDate);
+
+        if(date.before(ballotDate)) {
+            //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotBefore.add(restaurantChoicesBefore));
+            ballotBeforeOrAfter1.put(restaurantSuggestion, restaurantChoicesBefore1);
+        }
+        else {
+            VoteController voteController = new VoteController();
+            HashMap<String,Vote> votes = voteController.getVotes();
+
+            restaurantChoicesAfter = restaurantController.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
+            restaurantChoicesAfter1 = (RestaurantController.RestaurantChoices) restaurantChoicesAfter;
+            restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
+            //restaurantWinners.add(restaurantWinner);
+            /*ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter.add(restaurantWinners);//);*/
+            //ballotAfter.add(restaurantWinners);
+            //ballotAfter.add(restaurantChoicesAfter);
+            //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter);
+            ballotBeforeOrAfter1.put(restaurantWinner, restaurantChoicesAfter1);
+        }
 
 
         //randomRestaurants.
-        System.out.println(randomRestaurants);
+        //System.out.println(randomRestaurants);
 
         // Implement this pseudo code
         //if (ballot.getTime() > new Date().getTime())
