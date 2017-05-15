@@ -28,6 +28,7 @@ public class BallotController {
     private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
 
     //private RestaurantController.RestaurantChoices restaurantChoicesAfter1;
+
     private static HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices/*RestaurantController.RestaurantChoices*/> ballotBeforeOrAfter1;
 
 
@@ -36,12 +37,12 @@ public class BallotController {
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
-    public /*ResponseEntity<*/CreateBallot.BallotBeforeOrAfter/*>*/ getBallot (@PathVariable("ballotId") UUID ballotId) {
+    public HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices> getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
         ArrayList<Integer> averageRatings = new ArrayList<>();
         RestaurantController.AbstractRestaurant restaurantSuggestion = new RestaurantSuggestion();
-        //ArrayList<RestaurantController.AbstractRestaurant> restaurantSuggestions = new ArrayList<>();
+        ArrayList<RestaurantController.RestaurantChoices> restaurantSuggestions = new ArrayList<>();
 
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
@@ -49,7 +50,10 @@ public class BallotController {
         RestaurantController.RestaurantChoices restaurantChoicesBefore1 = new RestaurantChoicesBefore();
 
         RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
-        //ArrayList<RestaurantController.AbstractRestaurant> restaurantWinners = new ArrayList<>();
+        ArrayList<RestaurantController.AbstractRestaurant> restaurantWinners = new ArrayList<>();
+
+        ballotBeforeOrAfter1 = new HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>();
+        ArrayList<RestaurantController.RestaurantChoices> ballotBeforeOrAfter2 = new ArrayList<>();
 
         CreateBallot createBallot = new CreateBallot();
         CreateBallot.Ballot1 ballot = createBallot.getBallot();
@@ -64,13 +68,16 @@ public class BallotController {
         restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews);
         restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
 
+        System.out.println("Here are the restaruantChoicesBefore");
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
+            System.out.println(restaurantChoicesBefore.get(i).getName());
+            System.out.println(restaurantChoicesBefore.get(i).getDescription());
             restaurantChoicesBefore1.getRestaurantChoices().add(restaurantChoicesBefore.get(i));
         }
 
 
         // Getting the most current date and time as possible
-        DateFormat dateFormat = new SimpleDateFormat("MM/dd/YYYY HH:mm");
+        DateFormat dateFormat = new SimpleDateFormat("M dd, yyyy HH:mma");
         Date date = new Date();
         dateFormat.format(date);
 
@@ -79,7 +86,10 @@ public class BallotController {
 
         if(date.before(ballotDate)) {
             //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotBefore.add(restaurantChoicesBefore));
-            ballotBeforeOrAfter1.put(restaurantSuggestion, restaurantChoicesBefore1);
+            ballotBeforeOrAfter1.putIfAbsent(restaurantSuggestion, restaurantChoicesBefore1);
+            //restaurantSuggestions.add(restaurantSuggestion);
+            //ballotBeforeOrAfter2.add(restaurantSuggestions);
+            ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
         }
         else {
             VoteController voteController = new VoteController();
@@ -111,6 +121,6 @@ public class BallotController {
 
 
 
-        return ballotBeforeOrAfter;
+        return ballotBeforeOrAfter1;
     }
 }

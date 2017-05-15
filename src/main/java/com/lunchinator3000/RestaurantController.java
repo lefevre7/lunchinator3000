@@ -489,7 +489,7 @@ public class RestaurantController {
         public void setId(int id);
     }
 
-    public interface RestaurantChoices {
+    public interface RestaurantChoices extends AbstractRestaurant{
         ArrayList<RestaurantChoice> restaurantChoices = null;
 
         public ArrayList<RestaurantChoice> getRestaurantChoices();
