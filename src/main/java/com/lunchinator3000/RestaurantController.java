@@ -2,6 +2,7 @@ package com.lunchinator3000;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.TypeKey;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -99,7 +100,7 @@ public class RestaurantController {
         HashMap<String,Vote> votes = voteController.getVotes();
 
         restaurantChoicesAfter = getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
-        //restaurantWinner = findRestaurantWinner(votes, restaurantChoicesBefore);
+        restaurantWinner = getRestaurantWinner(votes, restaurantChoicesBefore);
 
 
 
@@ -111,34 +112,84 @@ public class RestaurantController {
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
         ArrayList<Vote> actualVotes = new ArrayList<Vote>(votes.values());
         ArrayList<Integer> individualVotes = new ArrayList<Integer>();
-        HashMap<String, Integer> restaurantVotes = new HashMap<>();
+        HashMap<Integer, Integer> restaurantVotes = new HashMap<>();
         ArrayList<AtomicInteger> atomicInteger = new ArrayList<>();
 
-        // Get the restaurantId into the individualVotes array indexed by how the votes came in
+        System.out.println("Printing HashMap votes");
+        for (String name: votes.keySet()){
+
+            String key =name.toString();
+            String value = votes.get(name).toString();
+            System.out.println(key + " " + value);
+        }
+
+        System.out.println("Printing actual Votes");
+        for(int i = 0; i < actualVotes.size(); i++) {
+            System.out.println(actualVotes.get(i));
+        }
+
+
+        System.out.println("Printing restaurantChoicesBefore");
+        for(int i = 0; i < actualVotes.size(); i++) {
+            System.out.println(restaurantChoicesBefore.get(i));
+        }
+
+
+        // Put the restaurantId into the individualVotes array (indexed by how the votes came in)
         for(int i = 0; i < actualVotes.size(); i++) {
             individualVotes.add(actualVotes.get(i).getRestaurantId());
         }
 
-        // When a vote equals a before-choice-restaurant's id, then set it in a hashmap that has the restaurant's name
-        // as the key, and a counter that goes with (is dependant on) the order of the restaurantChoicesBefore's rests
-        for(int i = 0; i < individualVotes.size(); i++){
-            for (int j = 0; j < restaurantChoicesBefore.size(); j++)
-            if (individualVotes.get(i) == restaurantChoicesBefore.get(j).getId()){
-                if(restaurantVotes.containsKey(restaurantChoicesBefore.get(j).getName()))
-                    //stored the restaurants now by their names (not id's)
-                    restaurantVotes.replace(restaurantChoicesBefore.get(j).getName(), atomicInteger.get(j).getAndIncrement());
-                else
-                    restaurantVotes.put(restaurantChoicesBefore.get(j).getName(), atomicInteger.get(j).getAndIncrement());
-            }
 
+        for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
+            System.out.println("Putting in restaurant votes");
 
+            System.out.println("Here are the restaurantChoicesBefore.get(i).getId()");
+            System.out.println(restaurantChoicesBefore.get(i).getId());
+            restaurantVotes.put(restaurantChoicesBefore.get(i).getId(), 0);
         }
+
+        System.out.println("Printing HashMap restaurantVotes");
+        for (Integer id: restaurantVotes.keySet()){
+
+            Integer key =id.intValue();
+            Integer value = restaurantVotes.get(id);
+            System.out.println(key + " " + value);
+        }
+        /*System.out.println("Printing restaurantVotes");
+        for(int i = 0; i < actualVotes.size(); i++) {
+            System.out.println(restaurantVotes.get(i).intValue());
+        }*/
+
+        System.out.println("restaurantVotes.replace(actualVotes.get(i).getRestaurantId(), atomicInteger.get(i).getAndIncrement()) should replace and increment --not mess it up");
+        for (int i = 0; i < actualVotes.size(); i++){
+            System.out.println("Here is actualVotes.get(i).getRestaurantId()");
+            System.out.println(actualVotes.get(i).getRestaurantId());
+            restaurantVotes.replace(actualVotes.get(i).getRestaurantId(), atomicInteger.get(i).getAndIncrement());
+        }
+
+        for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
+            RestaurantChoiceAfter restaurantChoiceAfter = new RestaurantChoiceAfter();
+
+            //System.out.println("individualVotes should be the same as restaurantChoicesBefore.get(i).getId()");
+
+            //System.out.println(individualVotes.get(i));
+            //System.out.println(restaurantChoicesBefore.get(i).getId());
+
+            restaurantChoiceAfter.setId(restaurantChoicesBefore.get(i).getId());
+            restaurantChoiceAfter.setName(restaurantChoicesBefore.get(i).getName());
+            restaurantChoiceAfter.setVotes(restaurantVotes.get(restaurantChoicesBefore.get(i).getId()));
+            restaurantChoicesAfter.add(restaurantChoiceAfter);
+        }
+
+
+
         return restaurantChoicesAfter;
     }
 
-    /*public RestaurantWinner findRestaurantWinner(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
+    public RestaurantWinner getRestaurantWinner(HashMap<String,Vote> votes, ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore){
         votes.values().
-    }*/
+    }
 
     public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<RestaurantController.IncomingRestaurant> incomingRestaurants) {
         //ArrayList<IncomingRestaurant> incomingRestaurants = null;
@@ -249,13 +300,38 @@ public class RestaurantController {
 
         for (int i = 0; i < restaurantsReviewsSize; i++) {
             int restaurantReviewsSize = restaurantsReviews.get(i).size();
+
+            System.out.println("Here is the restaurantReviewSize");
+            System.out.println(restaurantReviewsSize);
+
             for (int j = 0; j < restaurantReviewsSize; j++) {
                 int rating = restaurantsReviews.get(i).get(j).getRating();
+
+                System.out.println("Here is the rating");
+                System.out.println(rating);
+
                 averageRating = averageRating + rating;
+
+                System.out.println("Here is the averageRating");
+                System.out.println(averageRating);
+
             }
             actualAverageRating = averageRating.floatValue() / (restaurantsReviews.get(i).size() - 1);
+
+            System.out.println("Here is the actualAverageRating");
+            System.out.println(actualAverageRating);
+
             averageRating = Math.round(actualAverageRating);
+
+            System.out.println("Here is the averageRating rounded");
+            System.out.println(averageRating);
+
             averageRatings.add(averageRating);
+
+            System.out.println("Here is the averageRatings");
+            for (int j = 0; j < averageRatings.size(); j++) {
+                System.out.println(averageRatings.get(j));
+            }
             averageRating = 0;
 
         }
