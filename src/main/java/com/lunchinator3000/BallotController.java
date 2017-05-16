@@ -62,7 +62,7 @@ public class BallotController {
         restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
 
         // Make it so the restaurantChoicesBefore is compatible with the suggestion object
-        System.err.println("Here are the restaruantChoicesBefore");
+        System.out.println("Here are the restaruantChoicesBefore");
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
             System.out.println(restaurantChoicesBefore.get(i).getName());
             System.out.println(restaurantChoicesBefore.get(i).getDescription());

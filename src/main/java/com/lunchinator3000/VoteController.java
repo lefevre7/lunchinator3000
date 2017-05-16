@@ -5,7 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -42,9 +45,13 @@ public class VoteController {
                                                  @RequestParam("emailAddress") String emailAddress) {
         System.out.println("In the /api/vote getVote method");
 
+        //todo: check to see if there is a ballot, and if there is not, throw an error
         // This is the correct way to get the votes
         VoteController voteController = new VoteController();
         HashMap<String,Vote> votes = voteController.getVotes();
+
+        CreateBallot createBallot = new CreateBallot();
+        CreateBallot.Ballot1 ballot = createBallot.getBallot();
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
@@ -55,10 +62,25 @@ public class VoteController {
 
             //recordVote(id, ballotId, voterName, emailAddress);
         //return new ResponseEntity(votes, HttpStatus.OK);
-        String error = "";
-        return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
+        System.out.println("Printing date in MMM dd, yyyy HH:mma");
+        DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
+        Date date = new Date();
+        dateFormat.format(date);
+        System.out.println(date);
+
+        if(ballot.getTime().before(date)) {
+
+            String error = "You voted after";
+            return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
+        }
+        else
+        {
+            String error = "You voted!";
+            return new ResponseEntity<String>(error, HttpStatus.OK);
+        }
     }
 
+    //todo: implement this for a database
     /*private void recordVote(int id, UUID ballotId, String voterName, String emailAddress) {
 
         if (ballot.getBallotId() == ballotId){

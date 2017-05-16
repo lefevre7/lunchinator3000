@@ -28,6 +28,8 @@ public class CreateBallot {
         System.out.println(initialBallot.getVoters().get(0).getName());
         System.out.println(initialBallot.getVoters().get(0).getEmailAddress());
 
+        //todo: check to see if there is an initial ballot and throw and error if there isn't
+
         Ballot1 ballot = null;
         try {
             ballot = getNewBallot(initialBallot);
