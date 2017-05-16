@@ -8,10 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Jeremy L on 5/11/2017.
@@ -63,8 +60,14 @@ public class BallotController {
 
         System.out.println("Creating new restaurant controller");
         RestaurantController restaurantController = new RestaurantController(time);
-        randomRestaurants = restaurantController.getRestaurants();
+        randomRestaurants = ballot.getRestaurants();//restaurantController.getRestaurants();
         restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
+
+        if(restaurantsReviews == null){
+            //make the ballot say something (there were no restaurants or no reviews for the restaurants--most commonly,
+            //a ballot was tried to be accessed without creating one in the first place)
+        }
+
         averageRatings = restaurantController.getAverageRestaurantRating(restaurantsReviews);
 
         restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews);
@@ -79,22 +82,18 @@ public class BallotController {
 
 
         // Getting the most current date and time as possible
-        DateFormat dateFormat = new SimpleDateFormat("M dd, yyyy HH:mma");
+        System.out.println("Printing date in MMM dd, yyyy HH:mma");
+        DateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm a");
         Date date = new Date();
         dateFormat.format(date);
+        System.out.println(date);
 
         Date ballotDate = ballot.getTime();
         dateFormat.format(ballotDate);
+        System.out.println("Printing ballotDate");
+        System.out.println(ballotDate);
 
         if(date.before(ballotDate)) {
-            //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotBefore.add(restaurantChoicesBefore));
-            //ballotBeforeOrAfter1.putIfAbsent(restaurantSuggestion, restaurantChoicesBefore1);
-            //restaurantSuggestions.add(restaurantSuggestion);
-            //ballotBeforeOrAfter2.add(restaurantSuggestions);
-            //ballotBeforeOrAfter2.add(restaurantSuggestion);
-            //ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
-            //ballotBeforeOrAfter = new CreateBallot.BallotBefore();
-            //ballotBeforeOrAfter.setRestaurantChoices(restaurantSuggestion, restaurantChoicesBefore1)
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
             return suggestion;
         }
@@ -103,7 +102,7 @@ public class BallotController {
             HashMap<String,Vote> votes = voteController.getVotes();
 
             restaurantChoicesAfter = restaurantController.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
-            //restaurantChoicesAfter1 = (RestaurantController.RestaurantChoices) restaurantChoicesAfter;
+
             System.out.println("Here are the restaruantChoicesAfter");
             for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
                 System.out.println(restaurantChoicesAfter.get(i).getName());
@@ -111,36 +110,15 @@ public class BallotController {
                 restaurantChoicesAfter1.add(restaurantChoicesAfter.get(i));
             }
             restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
-            //restaurantWinners.add(restaurantWinner);
-            /*ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter.add(restaurantWinners);//);*/
-            //ballotAfter.add(restaurantWinners);
-            //ballotAfter.add(restaurantChoicesAfter);
-            //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter);
-            //ballotBeforeOrAfter1.put(restaurantWinner, restaurantChoicesAfter1);
+            restaurantWinner.setDatetime(ballotDate.toString()); // set again (not sure why it needs to be)
 
-            //ballotBeforeOrAfter2.add(restaurantWinner);
-            //ballotBeforeOrAfter2.add(restaurantChoicesAfter1);
+            /*ArrayList<RestaurantController.IncomingRestaurant> randomTemp = incomingRestaurants;
+            ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants = new ArrayList<>();
+            Collections.shuffle(randomTemp);*/
+            Collections.shuffle(restaurantChoicesAfter1);
 
-            //ballotBeforeOrAfter = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
-            BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
+            BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesAfter1);
             return winner;
         }
-
-
-        //randomRestaurants.
-        //System.out.println(randomRestaurants);
-
-        // Implement this pseudo code
-        //if (ballot.getTime() > new Date().getTime())
-            //then stick it into the ballotBeforeOrAfter object and return it
-        //return  ;
-        //else
-        // stick stick stuff into the ballotBeforeOrAfter object and return it
-        //return  ;
-
-
-
-        //return ballotBeforeOrAfter;
-        //return ballotBeforeOrAfter2;
     }
 }

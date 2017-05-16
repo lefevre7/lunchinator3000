@@ -7,14 +7,14 @@ import java.util.Date;
  */
 public class RestaurantWinner implements RestaurantController.AbstractRestaurant {
     private Integer id;
-    private Date datetime;
+    private String datetime;
     private String name;
     private int votes;
 
     public RestaurantWinner() {
     }
 
-    public RestaurantWinner(int id, String name, Date datetime, int votes) {
+    public RestaurantWinner(int id, String name, String datetime, int votes) {
         this.name = name;
         this.id = id;
         this.datetime = datetime;
@@ -31,11 +31,11 @@ public class RestaurantWinner implements RestaurantController.AbstractRestaurant
         this.id = id;
     }
 
-    public Date getDatetime() {
+    public String getDatetime() {
         return datetime;
     }
 
-    public void setDatetime(Date datetime) {
+    public void setDatetime(String datetime) {
         this.datetime = datetime;
     }
 

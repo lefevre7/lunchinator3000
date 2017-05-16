@@ -212,7 +212,7 @@ public class RestaurantController {
             }
         }
         restaurantWinner.setId(restaurantChoicesAfter.get(index).getId());
-        restaurantWinner.setDatetime(time);
+        //restaurantWinner.setDatetime(getTime().toString());
         restaurantWinner.setName(restaurantChoicesAfter.get(index).getName());
         restaurantWinner.setVotes(restaurantChoicesAfter.get(index).getVotes());
         return restaurantWinner;
@@ -225,6 +225,7 @@ public class RestaurantController {
 
         ObjectMapper mapper = new ObjectMapper();
 
+        if (incomingRestaurants != null)
         for (int i = 0; i < incomingRestaurants.size(); i++) {
             ArrayList<RestaurantReview> restaurantReviews = new ArrayList<RestaurantReview>();
             System.out.println(incomingRestaurants.get(i).getName());
@@ -303,6 +304,8 @@ public class RestaurantController {
             restaurantsReviews.add(restaurantReviews);
             //restaurantReviews.clear();
         }
+        else
+            return null; //todo: maybe do something more
         return restaurantsReviews;
     }
     //can make almost all methods here private (because they're only used by this one RestaurantController class) if I have time
@@ -435,7 +438,7 @@ public class RestaurantController {
         return restaurantChoicesBefore;
     }
 
-    public Date getTime() {
+   public Date getTime() {
         return time;
     }
 

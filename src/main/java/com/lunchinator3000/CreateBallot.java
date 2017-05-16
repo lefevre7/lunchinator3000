@@ -26,7 +26,7 @@ public class CreateBallot {
     //private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
     //private Ballot1 ballot11 = getBallot1(); // So this CreateBallot class can be in-charge of the ballot
 
-    private final AtomicLong counter = new AtomicLong();
+    //private final AtomicLong counter = new AtomicLong();
 
     @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, headers="Accept=application/json", consumes = "application/json", produces = "application/json")
     public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot) {
@@ -41,7 +41,8 @@ public class CreateBallot {
             ballot = getNewBallot(initialBallot);
         } catch (ParseException e) {
             e.printStackTrace();
-            ballotId = "Time in the wrong format (supposed to be: MM/dd/YYY HH:mm)";
+            ballotId = "Error with parsing the input date. It could be that it wasn't in this format: MM/dd/yy HH:mm";
+            return new ResponseEntity<String>(ballotId, HttpStatus.BAD_REQUEST);
         }
         ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}"; // Format it like JSON
         return new ResponseEntity<String>(ballotId, HttpStatus.CREATED);
@@ -51,6 +52,9 @@ public class CreateBallot {
         Ballot1 ballot1 = getBallot1();
         ballot1.setBallotId(ballotId);
 
+        System.out.println("Here is the ballotId");
+        System.out.println(ballot1.getBallotId());
+
         endTime = initialBallot.getEndTime();
         Date date = new SimpleDateFormat("MM/dd/yy HH:mm").parse(endTime);
         ballot1.setTime(date);
@@ -58,11 +62,19 @@ public class CreateBallot {
         System.out.println("Here is the initialBallot time");
         System.out.println(endTime);
 
+        System.out.println("Here is the ballot1 time");
+        System.out.println(ballot1.getTime());
+
+
         ballot1.setVoters(initialBallot.getVoters());
+        RestaurantController restaurantController = new RestaurantController(date);
+
+        ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants = restaurantController.getRestaurants();
+        ballot1.setRestaurants(randomRestaurants);
 
         System.out.println("Here is what getBallot1() does");
-        Ballot1 anotherBallot = getBallot1();
-        System.out.println(anotherBallot);
+        //Ballot1 anotherBallot = getBallot1();
+        //System.out.println(anotherBallot);
 
         return ballot1; //new Ballot1(ballotId, initialBallot.getTime(), initialBallot.getVoters());
     }
@@ -147,6 +159,8 @@ public class CreateBallot {
         private UUID ballotId;
         private Date endTime;
         private ArrayList<Voter1> voters;
+        private ArrayList<RestaurantController.IncomingRestaurant> restaurants;
+
         private static Ballot1 ballot1;
 
         //private BallotAfter ballotAfter;
@@ -154,10 +168,11 @@ public class CreateBallot {
 
         //private BallotBefore ballotBefore;
 
-        private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters) {
+        private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters, ArrayList<RestaurantController.IncomingRestaurant> restaurants) {
             this.ballotId = ballotId;
             this.endTime = time;
             this.voters = voters;
+            this.restaurants = restaurants;
         }
 
         // Prevents any other class from instantiating it
@@ -196,6 +211,14 @@ public class CreateBallot {
 
         public void setVoters(ArrayList<Voter1> voters) {
             this.voters = voters;
+        }
+
+        public ArrayList<RestaurantController.IncomingRestaurant> getRestaurants() {
+            return restaurants;
+        }
+
+        public void setRestaurants(ArrayList<RestaurantController.IncomingRestaurant> restaurants) {
+            this.restaurants = restaurants;
         }
 
         /*public BallotBefore getBallotBefore() {
