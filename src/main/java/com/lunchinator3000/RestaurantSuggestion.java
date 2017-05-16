@@ -3,7 +3,7 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantSuggestion implements RestaurantController.AbstractRestaurant {
+public class RestaurantSuggestion implements AbstractRestaurant {
     private Integer id;
     private String name;
     private int averageReview;

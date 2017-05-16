@@ -3,14 +3,11 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/10/2017.
  */
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,9 +64,9 @@ public class CreateBallot {
 
 
         ballot1.setVoters(initialBallot.getVoters());
-        RestaurantController restaurantController = new RestaurantController(date);
+        RestaurantController restaurantController = new RestaurantController();
 
-        ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants = restaurantController.getRestaurants();
+        ArrayList<IncomingRestaurant> randomRestaurants = restaurantController.getRestaurants();
         ballot1.setRestaurants(randomRestaurants);
 
         System.out.println("Here is what getBallot1() does");
@@ -159,7 +156,7 @@ public class CreateBallot {
         private UUID ballotId;
         private Date endTime;
         private ArrayList<Voter1> voters;
-        private ArrayList<RestaurantController.IncomingRestaurant> restaurants;
+        private ArrayList<IncomingRestaurant> restaurants;
 
         private static Ballot1 ballot1;
 
@@ -168,7 +165,7 @@ public class CreateBallot {
 
         //private BallotBefore ballotBefore;
 
-        private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters, ArrayList<RestaurantController.IncomingRestaurant> restaurants) {
+        private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters, ArrayList<IncomingRestaurant> restaurants) {
             this.ballotId = ballotId;
             this.endTime = time;
             this.voters = voters;
@@ -213,11 +210,11 @@ public class CreateBallot {
             this.voters = voters;
         }
 
-        public ArrayList<RestaurantController.IncomingRestaurant> getRestaurants() {
+        public ArrayList<IncomingRestaurant> getRestaurants() {
             return restaurants;
         }
 
-        public void setRestaurants(ArrayList<RestaurantController.IncomingRestaurant> restaurants) {
+        public void setRestaurants(ArrayList<IncomingRestaurant> restaurants) {
             this.restaurants = restaurants;
         }
 
@@ -253,17 +250,17 @@ public class CreateBallot {
      */
     public static class BallotBefore implements BallotInterface{
         private RestaurantSuggestion suggestion;
-        private ArrayList<RestaurantController.RestaurantChoice> restaurantChoices;
+        private ArrayList<RestaurantChoice> restaurantChoices;
 
 
-        public BallotBefore(RestaurantSuggestion suggestion, ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
+        public BallotBefore(RestaurantSuggestion suggestion, ArrayList<RestaurantChoice> restaurantChoices) {
             this.suggestion = suggestion;
             this.restaurantChoices = restaurantChoices;
         }
         public BallotBefore() {
         }
 
-        public RestaurantController.AbstractRestaurant getSuggestion() {
+        public AbstractRestaurant getSuggestion() {
             return suggestion;
         }
 
@@ -271,11 +268,11 @@ public class CreateBallot {
             this.suggestion = suggestion;
         }
 
-        public ArrayList<RestaurantController.RestaurantChoice> getChoices() {
+        public ArrayList<RestaurantChoice> getChoices() {
             return restaurantChoices;
         }
 
-        public void setChoices(ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
+        public void setChoices(ArrayList<RestaurantChoice> restaurantChoices) {
             this.restaurantChoices = restaurantChoices;
         }
 
@@ -283,10 +280,10 @@ public class CreateBallot {
 
     public static class BallotAfter implements BallotInterface{
         private RestaurantWinner winner;
-        private ArrayList<RestaurantController.RestaurantChoice> restaurantChoices;
+        private ArrayList<RestaurantChoice> restaurantChoices;
 
 
-        public BallotAfter(RestaurantWinner winner, ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
+        public BallotAfter(RestaurantWinner winner, ArrayList<RestaurantChoice> restaurantChoices) {
             this.winner = winner;
             this.restaurantChoices = restaurantChoices;
         }
@@ -294,7 +291,7 @@ public class CreateBallot {
         public BallotAfter() {
         }
 
-        public RestaurantController.AbstractRestaurant getWinner() {
+        public AbstractRestaurant getWinner() {
             return winner;
         }
 
@@ -302,11 +299,11 @@ public class CreateBallot {
             this.winner = winner;
         }
 
-        public ArrayList<RestaurantController.RestaurantChoice> getChoices() {
+        public ArrayList<RestaurantChoice> getChoices() {
             return restaurantChoices;
         }
 
-        public void setChoices(ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
+        public void setChoices(ArrayList<RestaurantChoice> restaurantChoices) {
             this.restaurantChoices = restaurantChoices;
         }
     }

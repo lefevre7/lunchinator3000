@@ -17,6 +17,6 @@ public class ExceptionHandlingController {
             reason="Data integrity violation")  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public void conflict() {
-        // Nothing to do
+        //throw new CustomGenericException("E888", "This is custom message X");
     }
 }

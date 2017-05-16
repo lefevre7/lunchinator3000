@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -17,10 +16,7 @@ import java.util.*;
  */
 @RestController
 public class BallotController {
-
-    Date time;
-    //ArrayList<CreateBallot.Voter1> voters;
-    private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
+    private ArrayList<IncomingRestaurant> randomRestaurants;
     private RestaurantSuggestion restaurantSuggestion;
     private BallotInterface ballotBeforeOrAfter;
     //private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBefore;
@@ -28,7 +24,7 @@ public class BallotController {
 
     //private RestaurantController.RestaurantChoices restaurantChoicesAfter1;
 
-    private static HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices/*RestaurantController.RestaurantChoices*/> ballotBeforeOrAfter1;
+    private static HashMap<AbstractRestaurant,RestaurantChoices/*RestaurantController.RestaurantChoices*/> ballotBeforeOrAfter1;
 
 
     public BallotController() {
@@ -42,18 +38,18 @@ public class BallotController {
         ArrayList<Integer> averageRatings = new ArrayList<>();
         //RestaurantController.AbstractRestaurant restaurantSuggestion = new RestaurantSuggestion();
         RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
-        ArrayList<RestaurantController.RestaurantChoices> restaurantSuggestions = new ArrayList<>();
+        ArrayList<RestaurantChoices> restaurantSuggestions = new ArrayList<>();
 
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
-        ArrayList<RestaurantController.RestaurantChoice> restaurantChoicesAfter1 = new ArrayList<>();
-        ArrayList<RestaurantController.RestaurantChoice> restaurantChoicesBefore1 = new ArrayList<>();
+        ArrayList<RestaurantChoice> restaurantChoicesAfter1 = new ArrayList<>();
+        ArrayList<RestaurantChoice> restaurantChoicesBefore1 = new ArrayList<>();
 
         //RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
         RestaurantWinner restaurantWinner = new RestaurantWinner();
-        ArrayList<RestaurantController.AbstractRestaurant> restaurantWinners = new ArrayList<>();
+        ArrayList<AbstractRestaurant> restaurantWinners = new ArrayList<>();
 
-        ballotBeforeOrAfter1 = new HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>();
+        ballotBeforeOrAfter1 = new HashMap<AbstractRestaurant,RestaurantChoices>();
         ArrayList<Restaurant> ballotBeforeOrAfter2 = new ArrayList<>();
 
         CreateBallot createBallot = new CreateBallot();
@@ -61,7 +57,7 @@ public class BallotController {
 
 
         System.out.println("Creating new restaurant controller");
-        RestaurantController restaurantController = new RestaurantController(time);
+        RestaurantController restaurantController = new RestaurantController();
         randomRestaurants = ballot.getRestaurants();//restaurantController.getRestaurants();
         restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
 
@@ -98,6 +94,7 @@ public class BallotController {
         System.out.println(dateFormat.format(ballotDate));
 
         if(date.before(ballotDate)) {
+            Collections.shuffle(restaurantChoicesBefore1);
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
             //return suggestion;
             return new ResponseEntity<BallotInterface>(suggestion, HttpStatus.OK);

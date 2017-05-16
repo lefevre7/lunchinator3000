@@ -5,16 +5,16 @@ import java.util.ArrayList;
 /**
  * Created by Jeremy L on 5/15/2017.
  */
-public class RestaurantChoicesAfter implements RestaurantController.RestaurantChoices {
-    private ArrayList<RestaurantController.RestaurantChoice> restaurantChoices = new ArrayList<>();
+public class RestaurantChoicesAfter implements RestaurantChoices {
+    private ArrayList<RestaurantChoice> restaurantChoices = new ArrayList<>();
 
     @Override
-    public ArrayList<RestaurantController.RestaurantChoice> getRestaurantChoices() {
+    public ArrayList<RestaurantChoice> getRestaurantChoices() {
         return restaurantChoices;
     }
 
     @Override
-    public void setRestaurantChoices(ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
+    public void setRestaurantChoices(ArrayList<RestaurantChoice> restaurantChoices) {
         this.restaurantChoices = restaurantChoices;
     }
 }
