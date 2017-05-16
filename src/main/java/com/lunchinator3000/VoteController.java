@@ -40,8 +40,7 @@ public class VoteController {
     public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
                                                  @RequestParam("voterName") String voterName,
                                                  @RequestParam("emailAddress") String emailAddress) {
-        String string = "hi";
-        System.out.println(string);
+        System.out.println("In the /api/vote getVote method");
 
         // This is the correct way to get the votes
         VoteController voteController = new VoteController();

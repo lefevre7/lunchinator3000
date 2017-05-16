@@ -40,6 +40,8 @@ public class BallotController {
         CreateBallot createBallot = new CreateBallot();
         CreateBallot.Ballot1 ballot = createBallot.getBallot();
 
+        System.out.println("In the getBallot() method.");
+
 
         System.out.println("Creating new restaurant controller");
         RestaurantController restaurantController = new RestaurantController();
@@ -53,13 +55,14 @@ public class BallotController {
             return new ResponseEntity<BallotInterface>(winner, HttpStatus.BAD_REQUEST);
         }
 
+        System.out.println("Getting averageRatings");
         averageRatings = restaurantController.getAverageRestaurantRating(restaurantsReviews);
 
         restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews, randomRestaurants);
         restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
 
         // Make it so the restaurantChoicesBefore is compatible with the suggestion object
-        System.out.println("Here are the restaruantChoicesBefore");
+        System.err.println("Here are the restaruantChoicesBefore");
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
             System.out.println(restaurantChoicesBefore.get(i).getName());
             System.out.println(restaurantChoicesBefore.get(i).getDescription());

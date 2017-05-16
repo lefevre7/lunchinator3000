@@ -54,10 +54,6 @@ public class CreateBallot {
         ArrayList<IncomingRestaurant> randomRestaurants = restaurantController.getRestaurants();
         ballot1.setRestaurants(randomRestaurants);
 
-        System.out.println("Here is what getBallot1() does");
-        //Ballot1 anotherBallot = getBallot1();
-        //System.out.println(anotherBallot);
-
         return ballot1;
     }
 

@@ -24,13 +24,6 @@ public class RestaurantController {
     ArrayList<IncomingRestaurant> getRestaurants() {
         ArrayList<IncomingRestaurant> incomingRestaurants = new ArrayList<IncomingRestaurant>();
         ArrayList<IncomingRestaurant> fiveRandomRestaurants = null;
-        //ArrayList<ArrayList<RestaurantReview>> restaurantsReviews1 = new ArrayList<ArrayList<RestaurantReview>>();
-        //ArrayList<Integer> averageRatings = new ArrayList<>();
-        //RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
-        //ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
-        //ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
-
-        //RestaurantWinner restaurantWinner = new RestaurantWinner();
 
         JsonNode rootNode = null;
 
@@ -60,7 +53,6 @@ public class RestaurantController {
             incomingRestaurants.add(incomingRestaurant);
         }
 
-        //System.out.println(result);
         System.out.println("Trying to print incomingRestaurants");
         System.out.println(incomingRestaurants);
 
@@ -68,29 +60,11 @@ public class RestaurantController {
         System.out.println("Getting 5 random restaurants");
         fiveRandomRestaurants = randomlyPick5Restaurants(incomingRestaurants);
         System.out.println("Printing five restaurants");
-        System.out.println(fiveRandomRestaurants.get(0).getName().toString());
-        System.out.println(fiveRandomRestaurants.get(1).getName().toString());
-        System.out.println(fiveRandomRestaurants.get(2).getName().toString());
-        System.out.println(fiveRandomRestaurants.get(3).getName().toString());
-        System.out.println(fiveRandomRestaurants.get(4).getName().toString());
-        //get restaurant reviews
-        System.out.println("Instantiating RestaurantReviews class");
-       // RestaurantsReviews restaurantsReviews = new RestaurantsReviews();
-
-
-        //restaurantsReviews1 = getRestaurantsReviews(fiveRandomRestaurants);
-
-        System.out.println("Getting averageRatings");
-        //averageRatings = getAverageRestaurantRating(restaurantsReviews1);
-
-        //restaurantSuggestion = getRestaurantSuggestion(averageRatings, restaurantsReviews1);
-        //restaurantChoicesBefore = getRestaurantChoiceBefore(averageRatings, fiveRandomRestaurants);
-
-        //VoteController voteController = new VoteController();
-        //HashMap<String,Vote> votes = voteController.getVotes();
-
-        //restaurantChoicesAfter = getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
-        //restaurantWinner = getRestaurantWinner(restaurantChoicesAfter);
+        System.out.println(fiveRandomRestaurants.get(0).getName());
+        System.out.println(fiveRandomRestaurants.get(1).getName());
+        System.out.println(fiveRandomRestaurants.get(2).getName());
+        System.out.println(fiveRandomRestaurants.get(3).getName());
+        System.out.println(fiveRandomRestaurants.get(4).getName());
 
         return fiveRandomRestaurants;
     }
