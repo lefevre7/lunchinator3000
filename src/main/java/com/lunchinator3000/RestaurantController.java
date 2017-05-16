@@ -256,7 +256,7 @@ public class RestaurantController {
         return averageRatings;
     }
 
-    public RestaurantSuggestion getRestaurantSuggestion(ArrayList<Integer> averageRatings, ArrayList<ArrayList<RestaurantReview>> restaurantsReviews) {
+    public RestaurantSuggestion getRestaurantSuggestion(ArrayList<Integer> averageRatings, ArrayList<ArrayList<RestaurantReview>> restaurantsReviews, ArrayList<IncomingRestaurant> fiveRandomRestaurants) {
         // The index in the ArrayList the max rated restaurant is
         Integer index = null;
         RestaurantReview TopReview = null;
@@ -278,7 +278,7 @@ public class RestaurantController {
         }
         TopReview = getRestaurantSuggestionTopReviewer(index, restaurantsReviews);
 
-        return new RestaurantSuggestion(restaurantsReviews.get(index).get(0).getId(), TopReview.getRestaurant(), averageRatings.get(index), TopReview.getReviewer(), TopReview.getReview());
+        return new RestaurantSuggestion(fiveRandomRestaurants.get(index).getId(), TopReview.getRestaurant(), averageRatings.get(index), TopReview.getReviewer(), TopReview.getReview());
     }
 
     public RestaurantReview getRestaurantSuggestionTopReviewer(Integer index, ArrayList<ArrayList<RestaurantReview>> restaurantsReviews) {

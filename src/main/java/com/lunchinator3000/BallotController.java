@@ -55,7 +55,7 @@ public class BallotController {
 
         averageRatings = restaurantController.getAverageRestaurantRating(restaurantsReviews);
 
-        restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews);
+        restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews, randomRestaurants);
         restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
 
         // Make it so the restaurantChoicesBefore is compatible with the suggestion object

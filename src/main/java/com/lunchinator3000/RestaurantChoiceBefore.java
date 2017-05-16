@@ -50,8 +50,4 @@ public class RestaurantChoiceBefore implements RestaurantChoice {
         this.description = description;
     }
 
-    public int findAverageReview(RestaurantReview restaurantReview){
-        return 0;
-    }
-
 }
