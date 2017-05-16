@@ -115,5 +115,5 @@ A sample responce after endTime:
 }
 
 3. http://localhost:8080/api/vote?id=8&ballotId=f396be54-b960-46d7-b3f9-57ff92239187&voterName=Bob&emailAddress=bob@gmail.com
-To vote Example post to vote (using Postman)
+Example post to vote (using Postman)
 This returns a 409 response if the voting has ended and 200 response if your vote counted.
