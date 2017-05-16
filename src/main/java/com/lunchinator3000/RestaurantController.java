@@ -475,7 +475,7 @@ public class RestaurantController {
         }
     }*/
 
-    public interface AbstractRestaurant {
+    public interface AbstractRestaurant extends Restaurant{
         String name = "";
         Integer id = null;
 
@@ -489,7 +489,7 @@ public class RestaurantController {
         public void setId(int id);
     }
 
-    public interface RestaurantChoices extends AbstractRestaurant{
+    public interface RestaurantChoices extends Restaurant{// extends AbstractRestaurant{
         ArrayList<RestaurantChoice> restaurantChoices = null;
 
         public ArrayList<RestaurantChoice> getRestaurantChoices();

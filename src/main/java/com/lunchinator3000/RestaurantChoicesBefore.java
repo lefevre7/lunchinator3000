@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Jeremy L on 5/15/2017.
  */
-public class RestaurantChoicesBefore implements RestaurantController.RestaurantChoices {
+public class RestaurantChoicesBefore implements RestaurantController.RestaurantChoices{
     private ArrayList<RestaurantController.RestaurantChoice> restaurantChoices = new ArrayList<>();
 
     @Override

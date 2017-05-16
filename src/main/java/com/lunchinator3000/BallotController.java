@@ -37,7 +37,7 @@ public class BallotController {
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
-    public HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices> getBallot (@PathVariable("ballotId") UUID ballotId) {
+    public /*HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>*/ArrayList<Restaurant> getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
         ArrayList<Integer> averageRatings = new ArrayList<>();
@@ -53,7 +53,7 @@ public class BallotController {
         ArrayList<RestaurantController.AbstractRestaurant> restaurantWinners = new ArrayList<>();
 
         ballotBeforeOrAfter1 = new HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>();
-        ArrayList<RestaurantController.RestaurantChoices> ballotBeforeOrAfter2 = new ArrayList<>();
+        ArrayList<Restaurant> ballotBeforeOrAfter2 = new ArrayList<>();
 
         CreateBallot createBallot = new CreateBallot();
         CreateBallot.Ballot1 ballot = createBallot.getBallot();
@@ -89,6 +89,7 @@ public class BallotController {
             ballotBeforeOrAfter1.putIfAbsent(restaurantSuggestion, restaurantChoicesBefore1);
             //restaurantSuggestions.add(restaurantSuggestion);
             //ballotBeforeOrAfter2.add(restaurantSuggestions);
+            ballotBeforeOrAfter2.add(restaurantSuggestion);
             ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
         }
         else {
@@ -104,6 +105,9 @@ public class BallotController {
             //ballotAfter.add(restaurantChoicesAfter);
             //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter);
             ballotBeforeOrAfter1.put(restaurantWinner, restaurantChoicesAfter1);
+
+            ballotBeforeOrAfter2.add(restaurantWinner);
+            ballotBeforeOrAfter2.add(restaurantChoicesAfter1);
         }
 
 
@@ -121,6 +125,6 @@ public class BallotController {
 
 
 
-        return ballotBeforeOrAfter1;
+        return ballotBeforeOrAfter2;
     }
 }
