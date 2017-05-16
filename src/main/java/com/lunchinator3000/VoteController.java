@@ -35,7 +35,6 @@ public class VoteController {
     public VoteController() {
     }
 
-    //Ballot ballot = new Ballot(ballotId, time, voters);//a created ballot with guid for that day
 
     @RequestMapping(value = "/api/vote", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
@@ -50,10 +49,10 @@ public class VoteController {
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
-        if (votes.containsKey(emailAddress)) //votes needs to be getVotes
-            votes.replace(emailAddress, vote); //votes needs to be getVotes
+        if (votes.containsKey(emailAddress))
+            votes.replace(emailAddress, vote);
         else
-            votes.put(emailAddress, vote); //votes needs to be getVotes
+            votes.put(emailAddress, vote);
 
             //recordVote(id, ballotId, voterName, emailAddress);
         //return new ResponseEntity(votes, HttpStatus.OK);
