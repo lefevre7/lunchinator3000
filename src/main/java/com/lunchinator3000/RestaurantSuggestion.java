@@ -4,18 +4,18 @@ package com.lunchinator3000;
  * Created by Jeremy L on 5/11/2017.
  */
 public class RestaurantSuggestion implements RestaurantController.AbstractRestaurant {
+    private Integer id;
+    private String name;
     private int averageReview;
     private String TopReviewer;
     private String Review;
-    private String name;
-    private Integer id;
 
     public RestaurantSuggestion() {
     }
 
     public RestaurantSuggestion(int id, String name, int averageReview, String TopReviewer, String Review) {
-        this.name = name;
         this.id = id;
+        this.name = name;
         this.averageReview = averageReview;
         this.TopReviewer = TopReviewer;
         this.Review = Review;

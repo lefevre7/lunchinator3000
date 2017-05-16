@@ -1,5 +1,7 @@
 package com.lunchinator3000;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +36,7 @@ public class BallotController {
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
-    public /*HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>*/BallotInterface getBallot (@PathVariable("ballotId") UUID ballotId) {
+    public /*HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>*/ResponseEntity<BallotInterface> getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
         ArrayList<Integer> averageRatings = new ArrayList<>();
@@ -64,8 +66,9 @@ public class BallotController {
         restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
 
         if(restaurantsReviews == null){
-            //make the ballot say something (there were no restaurants or no reviews for the restaurants--most commonly,
-            //a ballot was tried to be accessed without creating one in the first place)
+            BallotInterface winner = new CreateBallot.BallotAfter();
+            //winner
+            return new ResponseEntity<BallotInterface>(winner, HttpStatus.BAD_REQUEST);
         }
 
         averageRatings = restaurantController.getAverageRestaurantRating(restaurantsReviews);
@@ -96,7 +99,8 @@ public class BallotController {
 
         if(date.before(ballotDate)) {
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
-            return suggestion;
+            //return suggestion;
+            return new ResponseEntity<BallotInterface>(suggestion, HttpStatus.OK);
         }
         else {
             VoteController voteController = new VoteController();
@@ -119,7 +123,15 @@ public class BallotController {
             Collections.shuffle(restaurantChoicesAfter1);
 
             BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesAfter1);
-            return winner;
+            //return winner;
+            return new ResponseEntity<BallotInterface>(winner, HttpStatus.OK);
         }
+
+    }
+    @RequestMapping(value = "/error", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<String> error(@PathVariable("ballotId") UUID ballotId){
+        String error = "There has been an error (there probably wasn't an GUID for the ballot, or if there was, it " +
+                "wasn't a correct one";
+        return new ResponseEntity<String>(error.toString(), HttpStatus.BAD_REQUEST);
     }
 }

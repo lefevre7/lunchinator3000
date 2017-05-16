@@ -4,10 +4,10 @@ package com.lunchinator3000;
  * Created by Jeremy L on 5/11/2017.
  */
 public class RestaurantChoiceBefore implements RestaurantController.RestaurantChoice {
+    private Integer id;
+    private String name;
     private int averageReview;
     private String description;
-    private String name;
-    private Integer id;
 
     public RestaurantChoiceBefore() {
     }

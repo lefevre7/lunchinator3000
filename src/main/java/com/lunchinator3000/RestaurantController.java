@@ -21,11 +21,14 @@ public class RestaurantController {
     private Date time;
     //private ArrayList<IncomingRestaurant> incomingRestaurants;
 
+
     public RestaurantController() {
     }
     public RestaurantController(Date time) {
         this.time = time;
     }
+
+
 
     public @ResponseBody
     ArrayList<IncomingRestaurant> getRestaurants() { //todo: this return value should probably change to the suggestion, choices, winner, and choices
@@ -305,7 +308,7 @@ public class RestaurantController {
             //restaurantReviews.clear();
         }
         else
-            return null; //todo: maybe do something more
+        {} //return null; //todo: maybe do something more
         return restaurantsReviews;
     }
     //can make almost all methods here private (because they're only used by this one RestaurantController class) if I have time
@@ -375,7 +378,12 @@ public class RestaurantController {
 
         RestaurantReview TopReview = null;
         // Get the max integer
-        Integer max = Collections.max(averageRatings);
+        Integer max = null;
+        if(averageRatings != null) {
+            max = Collections.max(averageRatings);
+        }
+        else
+            return new RestaurantSuggestion(0, "None", 0, "None", "No reviews");
 
         // Get the max integer's index
         for (int i = 0; i < averageRatings.size(); i++) {
