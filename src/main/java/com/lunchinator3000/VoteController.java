@@ -38,7 +38,7 @@ public class VoteController {
     //Ballot ballot = new Ballot(ballotId, time, voters);//a created ballot with guid for that day
 
     @RequestMapping(value = "/api/vote", method = RequestMethod.POST)
-    public @ResponseBody /*ResponseEntity<HashMap<String,Vote>>*/ void getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
+    public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
                                                  @RequestParam("voterName") String voterName,
                                                  @RequestParam("emailAddress") String emailAddress) {
         String string = "hi";
@@ -57,6 +57,8 @@ public class VoteController {
 
             //recordVote(id, ballotId, voterName, emailAddress);
         //return new ResponseEntity(votes, HttpStatus.OK);
+        String error = "";
+        return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
     }
 
     /*private void recordVote(int id, UUID ballotId, String voterName, String emailAddress) {

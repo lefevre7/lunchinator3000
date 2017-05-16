@@ -120,17 +120,36 @@ public class RestaurantController {
         ArrayList<Vote> actualVotes = new ArrayList<Vote>(votes.values());
         ArrayList<Integer> individualVotes = new ArrayList<Integer>();
         HashMap<Integer, Integer> restaurantVotes = new HashMap<>();
-        ArrayList<AtomicInteger> atomicInteger = new ArrayList<>();
+
+        for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
+            System.out.println("Putting in restaurant votes");
+
+            System.out.println("Here are the restaurantChoicesBefore.get(i).getId()");
+            System.out.println(restaurantChoicesBefore.get(i).getId());
+            RestaurantChoiceAfter restaurantChoiceAfter = new RestaurantChoiceAfter();
+            restaurantChoiceAfter.setId(restaurantChoicesBefore.get(i).getId());
+            restaurantChoiceAfter.setName(restaurantChoicesBefore.get(i).getName());
+            restaurantChoiceAfter.setVotes(0);
+            restaurantChoicesAfter.add(restaurantChoiceAfter);
+        }
 
         System.out.println("Printing HashMap votes");
         for (String name: votes.keySet()){
-
             String key =name.toString();
-            String value = votes.get(name).toString();
+            Integer value = votes.get(name).getRestaurantId();
+            for(int i = 0; i < restaurantChoicesAfter.size(); i++) {
+                if(value.equals(restaurantChoicesAfter.get(i).getId())){
+                    if(restaurantChoicesAfter.get(i).getVotes() < 1)
+                    restaurantChoicesAfter.get(i).setVotes(1);
+                    else
+                        restaurantChoicesAfter.get(i).setVotes(restaurantChoicesAfter.get(i).getVotes()+1);
+                }
+            }
+
             System.out.println(key + " " + value);
         }
 
-        System.out.println("Printing actual Votes");
+        /*System.out.println("Printing actual Votes");
         for(int i = 0; i < actualVotes.size(); i++) {
             System.out.println(actualVotes.get(i));
         }
@@ -145,6 +164,8 @@ public class RestaurantController {
         // Put the restaurantId into the individualVotes array (indexed by how the votes came in)
         for(int i = 0; i < actualVotes.size(); i++) {
             individualVotes.add(actualVotes.get(i).getRestaurantId());
+            //AtomicInteger atomicInteger1 = new AtomicInteger(0);
+            //atomicInteger.add(atomicInteger1);
         }
 
 
@@ -168,11 +189,15 @@ public class RestaurantController {
             System.out.println(restaurantVotes.get(i).intValue());
         }*/
 
-        System.out.println("restaurantVotes.replace(actualVotes.get(i).getRestaurantId(), atomicInteger.get(i).getAndIncrement()) should replace and increment --not mess it up");
+        /*System.out.println("restaurantVotes.replace(actualVotes.get(i).getRestaurantId(), atomicInteger.get(i).getAndIncrement()) should replace and increment --not mess it up");
         for (int i = 0; i < actualVotes.size(); i++){
+            AtomicInteger atomicInteger = new AtomicInteger();
             System.out.println("Here is actualVotes.get(i).getRestaurantId()");
             System.out.println(actualVotes.get(i).getRestaurantId());
-            restaurantVotes.replace(actualVotes.get(i).getRestaurantId(), atomicInteger.get(i).getAndIncrement());
+            if(restaurantVotes.containsKey(actualVotes.get(i).getRestaurantId()))
+                restaurantVotes.put(actualVotes.get(i).getRestaurantId(), atomicInteger.getAndIncrement());
+            else
+                restaurantVotes.put(actualVotes.get(i).getRestaurantId(),atomicInteger.getAndIncrement());
         }
 
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
@@ -185,9 +210,12 @@ public class RestaurantController {
 
             restaurantChoiceAfter.setId(restaurantChoicesBefore.get(i).getId());
             restaurantChoiceAfter.setName(restaurantChoicesBefore.get(i).getName());
+
             restaurantChoiceAfter.setVotes(restaurantVotes.get(restaurantChoicesBefore.get(i).getId()));
+            //restaurantChoiceAfter.setVotes(restaurantVotes.get());
+
             restaurantChoicesAfter.add(restaurantChoiceAfter);
-        }
+        }*/
 
 
 

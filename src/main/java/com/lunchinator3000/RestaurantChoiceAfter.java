@@ -6,7 +6,7 @@ package com.lunchinator3000;
 public class RestaurantChoiceAfter implements RestaurantController.RestaurantChoice {
     private Integer id;
     private String name;
-    private int votes;
+    private int votes = 0;
 
     public RestaurantChoiceAfter() {
     }
@@ -42,7 +42,7 @@ public class RestaurantChoiceAfter implements RestaurantController.RestaurantCho
     }
 
     public void incrementVotes() {
-        votes = votes++;
+        this.votes = this.votes++;
     }
 
 }
