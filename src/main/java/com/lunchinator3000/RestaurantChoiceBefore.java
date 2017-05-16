@@ -13,8 +13,8 @@ public class RestaurantChoiceBefore implements RestaurantController.RestaurantCh
     }
 
     public RestaurantChoiceBefore(int id, String name, int averageReview, String description) {
-        this.name = name;
         this.id = id;
+        this.name = name;
         this.averageReview = averageReview;
         this.description = description;
     }

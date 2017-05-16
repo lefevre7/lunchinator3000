@@ -83,7 +83,7 @@ public class BallotController {
 
         // Getting the most current date and time as possible
         System.out.println("Printing date in MMM dd, yyyy HH:mma");
-        DateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy HH:mm a");
+        DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();
         dateFormat.format(date);
         System.out.println(date);
@@ -92,6 +92,7 @@ public class BallotController {
         dateFormat.format(ballotDate);
         System.out.println("Printing ballotDate");
         System.out.println(ballotDate);
+        System.out.println(dateFormat.format(ballotDate));
 
         if(date.before(ballotDate)) {
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
@@ -110,7 +111,7 @@ public class BallotController {
                 restaurantChoicesAfter1.add(restaurantChoicesAfter.get(i));
             }
             restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
-            restaurantWinner.setDatetime(ballotDate.toString()); // set again (not sure why it needs to be)
+            restaurantWinner.setDatetime(dateFormat.format(ballotDate)); // set again (not sure why it needs to be)
 
             /*ArrayList<RestaurantController.IncomingRestaurant> randomTemp = incomingRestaurants;
             ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants = new ArrayList<>();
