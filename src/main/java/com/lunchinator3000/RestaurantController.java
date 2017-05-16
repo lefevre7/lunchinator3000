@@ -212,7 +212,7 @@ public class RestaurantController {
             }
         }
         restaurantWinner.setId(restaurantChoicesAfter.get(index).getId());
-        restaurantWinner.setDate(time);
+        restaurantWinner.setDatetime(time);
         restaurantWinner.setName(restaurantChoicesAfter.get(index).getName());
         restaurantWinner.setVotes(restaurantChoicesAfter.get(index).getVotes());
         return restaurantWinner;

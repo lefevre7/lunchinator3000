@@ -24,8 +24,8 @@ public class BallotController {
     private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
     private RestaurantSuggestion restaurantSuggestion;
     private BallotInterface ballotBeforeOrAfter;
-    private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBefore;
-    private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
+    //private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBefore;
+    //private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
 
     //private RestaurantController.RestaurantChoices restaurantChoicesAfter1;
 
@@ -93,7 +93,10 @@ public class BallotController {
             //ballotBeforeOrAfter2.add(restaurantSuggestions);
             ballotBeforeOrAfter2.add(restaurantSuggestion);
             ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
-            ballotBeforeOrAfter = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
+            //ballotBeforeOrAfter = new CreateBallot.BallotBefore();
+            //ballotBeforeOrAfter.setRestaurantChoices(restaurantSuggestion, restaurantChoicesBefore1)
+            BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
+            return suggestion;
         }
         else {
             VoteController voteController = new VoteController();
@@ -117,7 +120,10 @@ public class BallotController {
 
             ballotBeforeOrAfter2.add(restaurantWinner);
             ballotBeforeOrAfter2.add(restaurantChoicesAfter1);
-            ballotBeforeOrAfter = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
+
+            //ballotBeforeOrAfter = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
+            BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
+            return winner;
         }
 
 
@@ -134,7 +140,7 @@ public class BallotController {
 
 
 
-        return ballotBeforeOrAfter;
+        //return ballotBeforeOrAfter;
         //return ballotBeforeOrAfter2;
     }
 }

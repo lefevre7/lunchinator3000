@@ -237,21 +237,23 @@ public class CreateBallot {
             this.suggestion = suggestion;
             this.restaurantChoices = restaurantChoices;
         }
-
-        public RestaurantController.RestaurantChoices getRestaurantChoices() {
-            return restaurantChoices;
+        public BallotBefore() {
         }
 
-        public void setRestaurantChoices(RestaurantController.RestaurantChoices restaurantChoices) {
-            this.restaurantChoices = restaurantChoices;
-        }
-
-        public RestaurantController.AbstractRestaurant getBallotBefore() {
+        public RestaurantController.AbstractRestaurant getSuggestion() {
             return suggestion;
         }
 
-        public void setBallotBefore(RestaurantSuggestion suggestion) {
+        public void setSuggestion(RestaurantSuggestion suggestion) {
             this.suggestion = suggestion;
+        }
+
+        public RestaurantController.RestaurantChoices getChoices() {
+            return restaurantChoices;
+        }
+
+        public void setChoices(RestaurantController.RestaurantChoices restaurantChoices) {
+            this.restaurantChoices = restaurantChoices;
         }
 
     }
@@ -266,19 +268,22 @@ public class CreateBallot {
             this.restaurantChoices = restaurantChoices;
         }
 
-        public RestaurantController.AbstractRestaurant getBallotAfter() {
+        public BallotAfter() {
+        }
+
+        public RestaurantController.AbstractRestaurant getWinner() {
             return winner;
         }
 
-        public void setBallotAfter(RestaurantWinner winner) {
+        public void setWinner(RestaurantWinner winner) {
             this.winner = winner;
         }
 
-        public RestaurantController.RestaurantChoices getRestaurantChoices() {
+        public RestaurantController.RestaurantChoices getChoices() {
             return restaurantChoices;
         }
 
-        public void setRestaurantChoices(RestaurantController.RestaurantChoices restaurantChoices) {
+        public void setChoices(RestaurantController.RestaurantChoices restaurantChoices) {
             this.restaurantChoices = restaurantChoices;
         }
     }

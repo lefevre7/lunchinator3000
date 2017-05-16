@@ -6,39 +6,37 @@ import java.util.Date;
  * Created by Jeremy L on 5/11/2017.
  */
 public class RestaurantWinner implements RestaurantController.AbstractRestaurant {
-    private Date date;
-    private int votes;
-    private String name;
     private Integer id;
+    private Date datetime;
+    private String name;
+    private int votes;
 
     public RestaurantWinner() {
     }
 
-    public RestaurantWinner(int id, String name, Date date, int votes) {
+    public RestaurantWinner(int id, String name, Date datetime, int votes) {
         this.name = name;
         this.id = id;
-        this.date = date;
+        this.datetime = datetime;
         this.votes = votes;
     }
 
-    public Date getDate() {
-        return date;
+    @Override
+    public int getId() {
+        return id;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    @Override
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public int getVotes() {
-        return votes;
+    public Date getDatetime() {
+        return datetime;
     }
 
-    public void setVotes(int votes) {
-        this.votes = votes;
-    }
-
-    public String convertDate(Date date){
-        return "";
+    public void setDatetime(Date datetime) {
+        this.datetime = datetime;
     }
 
     @Override
@@ -51,13 +49,11 @@ public class RestaurantWinner implements RestaurantController.AbstractRestaurant
         this.name = name;
     }
 
-    @Override
-    public int getId() {
-        return id;
+    public int getVotes() {
+        return votes;
     }
 
-    @Override
-    public void setId(int id) {
-        this.id = id;
+    public void setVotes(int votes) {
+        this.votes = votes;
     }
 }
