@@ -17,40 +17,25 @@ import java.util.*;
 @RestController
 public class BallotController {
     private ArrayList<IncomingRestaurant> randomRestaurants;
-    private RestaurantSuggestion restaurantSuggestion;
-    private BallotInterface ballotBeforeOrAfter;
-    //private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBefore;
-    //private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
-
-    //private RestaurantController.RestaurantChoices restaurantChoicesAfter1;
-
-    private static HashMap<AbstractRestaurant,RestaurantChoices/*RestaurantController.RestaurantChoices*/> ballotBeforeOrAfter1;
-
 
     public BallotController() {
 
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
-    public /*HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>*/ResponseEntity<BallotInterface> getBallot (@PathVariable("ballotId") UUID ballotId) {
-        //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
+    public ResponseEntity<BallotInterface> getBallot (@PathVariable("ballotId") UUID ballotId) {
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
         ArrayList<Integer> averageRatings = new ArrayList<>();
-        //RestaurantController.AbstractRestaurant restaurantSuggestion = new RestaurantSuggestion();
         RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
-        ArrayList<RestaurantChoices> restaurantSuggestions = new ArrayList<>();
 
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
+        // To make them compatible with the created interfaces
         ArrayList<RestaurantChoice> restaurantChoicesAfter1 = new ArrayList<>();
         ArrayList<RestaurantChoice> restaurantChoicesBefore1 = new ArrayList<>();
 
-        //RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
         RestaurantWinner restaurantWinner = new RestaurantWinner();
         ArrayList<AbstractRestaurant> restaurantWinners = new ArrayList<>();
-
-        ballotBeforeOrAfter1 = new HashMap<AbstractRestaurant,RestaurantChoices>();
-        ArrayList<Restaurant> ballotBeforeOrAfter2 = new ArrayList<>();
 
         CreateBallot createBallot = new CreateBallot();
         CreateBallot.Ballot1 ballot = createBallot.getBallot();
@@ -58,9 +43,10 @@ public class BallotController {
 
         System.out.println("Creating new restaurant controller");
         RestaurantController restaurantController = new RestaurantController();
-        randomRestaurants = ballot.getRestaurants();//restaurantController.getRestaurants();
+        randomRestaurants = ballot.getRestaurants();
         restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
 
+        // If there was not a ballot created
         if(restaurantsReviews == null){
             BallotInterface winner = new CreateBallot.BallotAfter();
             //winner
@@ -72,13 +58,13 @@ public class BallotController {
         restaurantSuggestion = restaurantController.getRestaurantSuggestion(averageRatings, restaurantsReviews);
         restaurantChoicesBefore = restaurantController.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
 
+        // Make it so the restaurantChoicesBefore is compatible with the suggestion object
         System.out.println("Here are the restaruantChoicesBefore");
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
             System.out.println(restaurantChoicesBefore.get(i).getName());
             System.out.println(restaurantChoicesBefore.get(i).getDescription());
             restaurantChoicesBefore1.add(restaurantChoicesBefore.get(i));
         }
-
 
         // Getting the most current date and time as possible
         System.out.println("Printing date in MMM dd, yyyy HH:mma");
@@ -93,18 +79,20 @@ public class BallotController {
         System.out.println(ballotDate);
         System.out.println(dateFormat.format(ballotDate));
 
+
         if(date.before(ballotDate)) {
             Collections.shuffle(restaurantChoicesBefore1);
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
             //return suggestion;
             return new ResponseEntity<BallotInterface>(suggestion, HttpStatus.OK);
         }
-        else {
+        else {// After the current date
             VoteController voteController = new VoteController();
             HashMap<String,Vote> votes = voteController.getVotes();
 
             restaurantChoicesAfter = restaurantController.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
 
+            // Make it so the restaurantChoicesAfter is compatible with the restaurantWinner object
             System.out.println("Here are the restaruantChoicesAfter");
             for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
                 System.out.println(restaurantChoicesAfter.get(i).getName());
@@ -112,19 +100,16 @@ public class BallotController {
                 restaurantChoicesAfter1.add(restaurantChoicesAfter.get(i));
             }
             restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
-            restaurantWinner.setDatetime(dateFormat.format(ballotDate)); // set again (not sure why it needs to be)
+            restaurantWinner.setDatetime(dateFormat.format(ballotDate));
 
-            /*ArrayList<RestaurantController.IncomingRestaurant> randomTemp = incomingRestaurants;
-            ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants = new ArrayList<>();
-            Collections.shuffle(randomTemp);*/
             Collections.shuffle(restaurantChoicesAfter1);
-
             BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesAfter1);
             //return winner;
             return new ResponseEntity<BallotInterface>(winner, HttpStatus.OK);
         }
 
     }
+
     @RequestMapping(value = "/error", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<String> error(@PathVariable("ballotId") UUID ballotId){
         String error = "There has been an error (there probably wasn't an GUID for the ballot, or if there was, it " +

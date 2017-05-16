@@ -15,13 +15,13 @@ import java.util.*;
  */
 @RestController
 public class RestaurantController {
-    private UUID ballotId;
+    //private UUID ballotId;
 
     public RestaurantController() {
     }
 
     public @ResponseBody
-    ArrayList<IncomingRestaurant> getRestaurants() { //todo: this return value should probably change to the suggestion, choices, winner, and choices
+    ArrayList<IncomingRestaurant> getRestaurants() {
         ArrayList<IncomingRestaurant> incomingRestaurants = new ArrayList<IncomingRestaurant>();
         ArrayList<IncomingRestaurant> fiveRandomRestaurants = null;
         //ArrayList<ArrayList<RestaurantReview>> restaurantsReviews1 = new ArrayList<ArrayList<RestaurantReview>>();
@@ -30,7 +30,8 @@ public class RestaurantController {
         //ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         //ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
 
-        RestaurantWinner restaurantWinner = new RestaurantWinner();
+        //RestaurantWinner restaurantWinner = new RestaurantWinner();
+
         JsonNode rootNode = null;
 
         ObjectMapper mapper = new ObjectMapper();
@@ -316,7 +317,7 @@ public class RestaurantController {
             restaurantChoiceBefore.setName(fiveRandomRestaurants.get(i).getName());
             restaurantChoiceBefore.setAverageReview(averageRatings.get(i));
             restaurantChoiceBefore.setDescription(fiveRandomRestaurants.get(i).getDescription());
-            restaurantChoicesBefore.add(restaurantChoiceBefore);//new RestaurantChoiceBefore(fiveRandomRestaurants.get(i).getId(), fiveRandomRestaurants.get(i).getName(), averageRatings.get(i), fiveRandomRestaurants.get(i).getDescription()));
+            restaurantChoicesBefore.add(restaurantChoiceBefore);
         }
         return restaurantChoicesBefore;
     }
