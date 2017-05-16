@@ -47,8 +47,8 @@ public class BallotController {
 
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
-        RestaurantController.RestaurantChoices restaurantChoicesAfter1 = new RestaurantChoicesAfter();
-        RestaurantController.RestaurantChoices restaurantChoicesBefore1 = new RestaurantChoicesBefore();
+        ArrayList<RestaurantController.RestaurantChoice> restaurantChoicesAfter1 = new ArrayList<>();
+        ArrayList<RestaurantController.RestaurantChoice> restaurantChoicesBefore1 = new ArrayList<>();
 
         //RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
         RestaurantWinner restaurantWinner = new RestaurantWinner();
@@ -74,7 +74,7 @@ public class BallotController {
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
             System.out.println(restaurantChoicesBefore.get(i).getName());
             System.out.println(restaurantChoicesBefore.get(i).getDescription());
-            restaurantChoicesBefore1.getRestaurantChoices().add(restaurantChoicesBefore.get(i));
+            restaurantChoicesBefore1.add(restaurantChoicesBefore.get(i));
         }
 
 
@@ -88,11 +88,11 @@ public class BallotController {
 
         if(date.before(ballotDate)) {
             //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotBefore.add(restaurantChoicesBefore));
-            ballotBeforeOrAfter1.putIfAbsent(restaurantSuggestion, restaurantChoicesBefore1);
+            //ballotBeforeOrAfter1.putIfAbsent(restaurantSuggestion, restaurantChoicesBefore1);
             //restaurantSuggestions.add(restaurantSuggestion);
             //ballotBeforeOrAfter2.add(restaurantSuggestions);
-            ballotBeforeOrAfter2.add(restaurantSuggestion);
-            ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
+            //ballotBeforeOrAfter2.add(restaurantSuggestion);
+            //ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
             //ballotBeforeOrAfter = new CreateBallot.BallotBefore();
             //ballotBeforeOrAfter.setRestaurantChoices(restaurantSuggestion, restaurantChoicesBefore1)
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
@@ -108,7 +108,7 @@ public class BallotController {
             for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
                 System.out.println(restaurantChoicesAfter.get(i).getName());
                 System.out.println(restaurantChoicesAfter.get(i).getVotes());
-                restaurantChoicesAfter1.getRestaurantChoices().add(restaurantChoicesAfter.get(i));
+                restaurantChoicesAfter1.add(restaurantChoicesAfter.get(i));
             }
             restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
             //restaurantWinners.add(restaurantWinner);
@@ -116,10 +116,10 @@ public class BallotController {
             //ballotAfter.add(restaurantWinners);
             //ballotAfter.add(restaurantChoicesAfter);
             //ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter);
-            ballotBeforeOrAfter1.put(restaurantWinner, restaurantChoicesAfter1);
+            //ballotBeforeOrAfter1.put(restaurantWinner, restaurantChoicesAfter1);
 
-            ballotBeforeOrAfter2.add(restaurantWinner);
-            ballotBeforeOrAfter2.add(restaurantChoicesAfter1);
+            //ballotBeforeOrAfter2.add(restaurantWinner);
+            //ballotBeforeOrAfter2.add(restaurantChoicesAfter1);
 
             //ballotBeforeOrAfter = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
             BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);

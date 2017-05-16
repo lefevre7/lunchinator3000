@@ -230,10 +230,10 @@ public class CreateBallot {
      */
     public static class BallotBefore implements BallotInterface{
         private RestaurantSuggestion suggestion;
-        private RestaurantController.RestaurantChoices restaurantChoices;
+        private ArrayList<RestaurantController.RestaurantChoice> restaurantChoices;
 
 
-        public BallotBefore(RestaurantSuggestion suggestion, RestaurantController.RestaurantChoices restaurantChoices) {
+        public BallotBefore(RestaurantSuggestion suggestion, ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
             this.suggestion = suggestion;
             this.restaurantChoices = restaurantChoices;
         }
@@ -248,11 +248,11 @@ public class CreateBallot {
             this.suggestion = suggestion;
         }
 
-        public RestaurantController.RestaurantChoices getChoices() {
+        public ArrayList<RestaurantController.RestaurantChoice> getChoices() {
             return restaurantChoices;
         }
 
-        public void setChoices(RestaurantController.RestaurantChoices restaurantChoices) {
+        public void setChoices(ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
             this.restaurantChoices = restaurantChoices;
         }
 
@@ -260,10 +260,10 @@ public class CreateBallot {
 
     public static class BallotAfter implements BallotInterface{
         private RestaurantWinner winner;
-        private RestaurantController.RestaurantChoices restaurantChoices;
+        private ArrayList<RestaurantController.RestaurantChoice> restaurantChoices;
 
 
-        public BallotAfter(RestaurantWinner winner, RestaurantController.RestaurantChoices restaurantChoices) {
+        public BallotAfter(RestaurantWinner winner, ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
             this.winner = winner;
             this.restaurantChoices = restaurantChoices;
         }
@@ -279,11 +279,11 @@ public class CreateBallot {
             this.winner = winner;
         }
 
-        public RestaurantController.RestaurantChoices getChoices() {
+        public ArrayList<RestaurantController.RestaurantChoice> getChoices() {
             return restaurantChoices;
         }
 
-        public void setChoices(RestaurantController.RestaurantChoices restaurantChoices) {
+        public void setChoices(ArrayList<RestaurantController.RestaurantChoice> restaurantChoices) {
             this.restaurantChoices = restaurantChoices;
         }
     }
