@@ -17,16 +17,12 @@ public class RestaurantChoiceAfter implements RestaurantController.RestaurantCho
         this.votes = votes;
     }
 
-    public int getVotes() {
-        return votes;
+    public int getId() {
+        return id;
     }
 
-    public void setVotes(int votes) {
-        this.votes = votes;
-    }
-
-    public void incrementVotes() {
-        votes = votes++;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -37,12 +33,16 @@ public class RestaurantChoiceAfter implements RestaurantController.RestaurantCho
         this.name = name;
     }
 
-    public int getId() {
-        return id;
+    public int getVotes() {
+        return votes;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
+
+    public void incrementVotes() {
+        votes = votes++;
     }
 
 }

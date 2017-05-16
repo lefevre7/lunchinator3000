@@ -18,6 +18,21 @@ public class RestaurantChoiceBefore implements RestaurantController.RestaurantCh
         this.averageReview = averageReview;
         this.description = description;
     }
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getAverageReview() {
         return averageReview;
@@ -39,19 +54,4 @@ public class RestaurantChoiceBefore implements RestaurantController.RestaurantCh
         return 0;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

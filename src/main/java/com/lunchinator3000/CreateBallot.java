@@ -152,7 +152,7 @@ public class CreateBallot {
         //private BallotAfter ballotAfter;
         //private BallotBefore ballotBefore;
 
-        private BallotBeforeOrAfter ballotBeforeOrAfter;
+        //private BallotBefore ballotBefore;
 
         private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters) {
             this.ballotId = ballotId;
@@ -198,13 +198,13 @@ public class CreateBallot {
             this.voters = voters;
         }
 
-        public BallotBeforeOrAfter getBallotBeforeOrAfter() {
-            return ballotBeforeOrAfter;
+        /*public BallotBefore getBallotBefore() {
+            return ballotBefore;
         }
 
-        public void setBallotBeforeOrAfter(BallotBeforeOrAfter ballotBeforeOrAfter) {
-            this.ballotBeforeOrAfter = ballotBeforeOrAfter;
-        }
+        public void setBallotBefore(BallotBefore ballotBefore) {
+            this.ballotBefore = ballotBefore;
+        }*/
 
 
         /*public BallotAfter getBallotAfter() {
@@ -228,22 +228,60 @@ public class CreateBallot {
      *  This class' ArrayList will hold the winner and the choices after time is up for the ballot so that it can
      *  display anytype of AbstractRestaurant and return it in one object
      */
-    public static class BallotBeforeOrAfter {
-        private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBeforeOrAfter;
+    public static class BallotBefore implements BallotInterface{
+        private RestaurantSuggestion suggestion;
+        private RestaurantController.RestaurantChoices restaurantChoices;
 
-        public BallotBeforeOrAfter(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBeforeOrAfter) {
-            this.ballotBeforeOrAfter = ballotBeforeOrAfter;
+
+        public BallotBefore(RestaurantSuggestion suggestion, RestaurantController.RestaurantChoices restaurantChoices) {
+            this.suggestion = suggestion;
+            this.restaurantChoices = restaurantChoices;
         }
 
-        public ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> getBallotBeforeOrAfter() {
-            return ballotBeforeOrAfter;
+        public RestaurantController.RestaurantChoices getRestaurantChoices() {
+            return restaurantChoices;
         }
 
-        public void setBallotBeforeOrAfter(ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBeforeOrAfter) {
-            this.ballotBeforeOrAfter = ballotBeforeOrAfter;
+        public void setRestaurantChoices(RestaurantController.RestaurantChoices restaurantChoices) {
+            this.restaurantChoices = restaurantChoices;
         }
+
+        public RestaurantController.AbstractRestaurant getBallotBefore() {
+            return suggestion;
+        }
+
+        public void setBallotBefore(RestaurantSuggestion suggestion) {
+            this.suggestion = suggestion;
+        }
+
     }
 
+    public static class BallotAfter implements BallotInterface{
+        private RestaurantWinner winner;
+        private RestaurantController.RestaurantChoices restaurantChoices;
+
+
+        public BallotAfter(RestaurantWinner winner, RestaurantController.RestaurantChoices restaurantChoices) {
+            this.winner = winner;
+            this.restaurantChoices = restaurantChoices;
+        }
+
+        public RestaurantController.AbstractRestaurant getBallotAfter() {
+            return winner;
+        }
+
+        public void setBallotAfter(RestaurantWinner winner) {
+            this.winner = winner;
+        }
+
+        public RestaurantController.RestaurantChoices getRestaurantChoices() {
+            return restaurantChoices;
+        }
+
+        public void setRestaurantChoices(RestaurantController.RestaurantChoices restaurantChoices) {
+            this.restaurantChoices = restaurantChoices;
+        }
+    }
     /**
      *  This class' ArrayList will hold the suggestion and the choices before time is up for the ballot so that it can
      *  display anytype of AbstractRestaurant and return it in one object

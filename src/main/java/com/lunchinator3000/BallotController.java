@@ -23,7 +23,7 @@ public class BallotController {
     //ArrayList<CreateBallot.Voter1> voters;
     private ArrayList<RestaurantController.IncomingRestaurant> randomRestaurants;
     private RestaurantSuggestion restaurantSuggestion;
-    private CreateBallot.BallotBeforeOrAfter ballotBeforeOrAfter;
+    private BallotInterface ballotBeforeOrAfter;
     private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotBefore;
     private ArrayList<ArrayList<RestaurantController.AbstractRestaurant>> ballotAfter;
 
@@ -37,11 +37,12 @@ public class BallotController {
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
-    public /*HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>*/ArrayList<Restaurant> getBallot (@PathVariable("ballotId") UUID ballotId) {
+    public /*HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>*/BallotInterface getBallot (@PathVariable("ballotId") UUID ballotId) {
         //final String uri = "https://interview-project-17987.herokuapp.com/api/restaurants"; //http://localhost:8080/springrestexample/employees.json";
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
         ArrayList<Integer> averageRatings = new ArrayList<>();
-        RestaurantController.AbstractRestaurant restaurantSuggestion = new RestaurantSuggestion();
+        //RestaurantController.AbstractRestaurant restaurantSuggestion = new RestaurantSuggestion();
+        RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
         ArrayList<RestaurantController.RestaurantChoices> restaurantSuggestions = new ArrayList<>();
 
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
@@ -49,7 +50,8 @@ public class BallotController {
         RestaurantController.RestaurantChoices restaurantChoicesAfter1 = new RestaurantChoicesAfter();
         RestaurantController.RestaurantChoices restaurantChoicesBefore1 = new RestaurantChoicesBefore();
 
-        RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
+        //RestaurantController.AbstractRestaurant restaurantWinner = new RestaurantWinner();
+        RestaurantWinner restaurantWinner = new RestaurantWinner();
         ArrayList<RestaurantController.AbstractRestaurant> restaurantWinners = new ArrayList<>();
 
         ballotBeforeOrAfter1 = new HashMap<RestaurantController.AbstractRestaurant,RestaurantController.RestaurantChoices>();
@@ -91,13 +93,20 @@ public class BallotController {
             //ballotBeforeOrAfter2.add(restaurantSuggestions);
             ballotBeforeOrAfter2.add(restaurantSuggestion);
             ballotBeforeOrAfter2.add(restaurantChoicesBefore1);
+            ballotBeforeOrAfter = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
         }
         else {
             VoteController voteController = new VoteController();
             HashMap<String,Vote> votes = voteController.getVotes();
 
             restaurantChoicesAfter = restaurantController.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
-            restaurantChoicesAfter1 = (RestaurantController.RestaurantChoices) restaurantChoicesAfter;
+            //restaurantChoicesAfter1 = (RestaurantController.RestaurantChoices) restaurantChoicesAfter;
+            System.out.println("Here are the restaruantChoicesAfter");
+            for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
+                System.out.println(restaurantChoicesAfter.get(i).getName());
+                System.out.println(restaurantChoicesAfter.get(i).getVotes());
+                restaurantChoicesAfter1.getRestaurantChoices().add(restaurantChoicesAfter.get(i));
+            }
             restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
             //restaurantWinners.add(restaurantWinner);
             /*ballotBeforeOrAfter.setBallotBeforeOrAfter(ballotAfter.add(restaurantWinners);//);*/
@@ -108,6 +117,7 @@ public class BallotController {
 
             ballotBeforeOrAfter2.add(restaurantWinner);
             ballotBeforeOrAfter2.add(restaurantChoicesAfter1);
+            ballotBeforeOrAfter = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesBefore1);
         }
 
 
@@ -124,7 +134,7 @@ public class BallotController {
 
 
 
-
-        return ballotBeforeOrAfter2;
+        return ballotBeforeOrAfter;
+        //return ballotBeforeOrAfter2;
     }
 }
