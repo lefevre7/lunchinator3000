@@ -34,7 +34,6 @@ public class BallotController {
         ArrayList<RestaurantChoice> restaurantChoicesBefore1 = new ArrayList<>();
 
         RestaurantWinner restaurantWinner = new RestaurantWinner();
-        ArrayList<AbstractRestaurant> restaurantWinners = new ArrayList<>();
 
         CreateBallot createBallot = new CreateBallot();
         CreateBallot.Ballot1 ballot = createBallot.getBallot();
@@ -47,16 +46,14 @@ public class BallotController {
         randomRestaurants = ballot.getRestaurants();
         restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
 
-        // If there was not a ballot created
+        // If there was a ballot created
         System.out.println(ballotId);
         System.out.println(ballot.getBallotId());
-        UUID temp = ballot.getBallotId();
-
         if (ballotId.toString().equals(ballot.getBallotId().toString())){
             // Continue
         }
 
-        else {
+        else { // If there was not a ballot created
             CreateBallot.BallotError ballotError = new CreateBallot.BallotError();
             ballotError.setMessage("There is no ballotDate (which probably means you haven't created a ballot).");
             BallotInterface message = ballotError;

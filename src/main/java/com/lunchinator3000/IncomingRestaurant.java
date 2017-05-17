@@ -3,7 +3,7 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class IncomingRestaurant implements AbstractRestaurant {
+public class IncomingRestaurant implements RestaurantInterface {
     private String waitTimeMinutes;
     private String description;
     private String name;

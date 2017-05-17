@@ -197,7 +197,7 @@ public class CreateBallot {
 
     /**
      *  This class' ArrayList will hold the suggestion and the choices before time is up for the ballot so that it can
-     *  display any type of AbstractRestaurant and return it in one object
+     *  display any type of RestaurantInterface and return it in one object
      */
     public static class BallotBefore implements BallotInterface{
         private RestaurantSuggestion suggestion;
@@ -211,7 +211,7 @@ public class CreateBallot {
         public BallotBefore() {
         }
 
-        public AbstractRestaurant getSuggestion() {
+        public RestaurantInterface getSuggestion() {
             return suggestion;
         }
 
@@ -231,7 +231,7 @@ public class CreateBallot {
 
     /**
      *  This class' ArrayList will hold the winner and the choices after time is up for the ballot so that it can
-     *  display any type of AbstractRestaurant and return it in one object
+     *  display any type of RestaurantInterface and return it in one object
      */
     public static class BallotAfter implements BallotInterface{
         private RestaurantWinner winner;
@@ -246,7 +246,7 @@ public class CreateBallot {
         public BallotAfter() {
         }
 
-        public AbstractRestaurant getWinner() {
+        public RestaurantInterface getWinner() {
             return winner;
         }
 

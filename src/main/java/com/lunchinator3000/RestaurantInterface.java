@@ -3,14 +3,14 @@ package com.lunchinator3000;
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-/*abstract static class AbstractRestaurant {
+/*abstract static class RestaurantInterface {
     private String name;
     private int id;
 
-    public AbstractRestaurant() {
+    public RestaurantInterface() {
 
     }
-    public AbstractRestaurant(int id, String name) {
+    public RestaurantInterface(int id, String name) {
         this.name = name;
         this.id = id;
     }
@@ -32,7 +32,7 @@ package com.lunchinator3000;
     }
 }*/
 
-public interface AbstractRestaurant extends Restaurant{
+public interface RestaurantInterface extends Restaurant{
     String name = "";
     Integer id = null;
 
