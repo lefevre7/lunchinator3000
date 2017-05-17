@@ -10,13 +10,15 @@ Steps to run:
 7. Put spring-boot:run on the "Command line" spot
 8. Configure the JDK if nessessary:
   -Under Project Structure > Project SDK pick java version (1.8.0_121 is what I have)
-9. Run it.
+9. Possibly Reimport All Maven Projects
+10. Run it.
 
 Using the App:
 1. http://localhost:8080/api/create-ballot is to create a ballot
 Example post (using Postman)
 where raw and JSON are marked for the body and {"Content-Type":"application/json"} is marked on the headers:
 (and be patient, it may take a few)
+~~~~
 {
     "endTime":"5/16/17 12:32",
     "voters":[
@@ -31,11 +33,12 @@ where raw and JSON are marked for the body and {"Content-Type":"application/json
     ]
 
 }
-
+~~~~
 2. http://localhost:8080/api/ballot/f396be54-b960-46d7-b3f9-57ff92239187 in your browser or using Get in Postman
 Where the {ballodId} is f396be54-b960-46d7-b3f9-57ff92239187 an obtained from the responce in step one from Postman.
 
 A sample responce before endTime:
+~~~~
 {
   "suggestion": {
     "id": 8,
@@ -77,8 +80,9 @@ A sample responce before endTime:
     }
   ]
 }
-
+~~~~
 A sample responce after endTime:
+~~~~
 {
   "winner": {
     "id": 8,
@@ -114,7 +118,7 @@ A sample responce after endTime:
     }
   ]
 }
-
+~~~~
 3. http://localhost:8080/api/vote?id=8&ballotId=f396be54-b960-46d7-b3f9-57ff92239187&voterName=Bob&emailAddress=bob@gmail.com
 Example post to vote (using Postman)
 This returns a 409 response if the voting has ended and 200 response if your vote counted.
