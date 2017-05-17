@@ -6,12 +6,11 @@ Steps to run:
 3. Press the + button
 4. Add Configuration will pop up, pick Maven
 5. Put the folder you cloned it in where it says "Working directory"
-6. Put https://github.com/lefevre7/lunchinator3000
-7. Put spring-boot:run on the "Command line" spot
-8. Configure the JDK if nessessary:
+6. Put spring-boot:run on the "Command line" spot
+7. Configure the JDK if nessessary:
   -Under Project Structure > Project SDK pick java version (1.8.0_121 is what I have)
-9. Possibly Reimport All Maven Projects
-10. Run it.
+8. Possibly Reimport All Maven Projects
+9. Run it.
 
 Using the App:
 1. http://localhost:8080/api/create-ballot is to create a ballot
