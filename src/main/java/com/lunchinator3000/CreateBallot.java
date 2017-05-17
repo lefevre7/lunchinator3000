@@ -262,4 +262,24 @@ public class CreateBallot {
             this.restaurantChoices = restaurantChoices;
         }
     }
+
+    public static class BallotError implements BallotInterface{
+        private String message = "Error";
+
+
+        public BallotError(String message) {
+            this.message = message;
+        }
+
+        public BallotError() {
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
 }

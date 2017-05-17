@@ -15,7 +15,6 @@ import java.util.*;
  */
 @RestController
 public class RestaurantController {
-    private boolean restaurantsHaveBeenObtained = false;
 
     public RestaurantController() {
     }
@@ -237,11 +236,8 @@ public class RestaurantController {
 
         // Get the max integer
         Integer max = null;
-        if(averageRatings != null || averageRatings.toString() != "[]") {
-            max = Collections.max(averageRatings);
-        }
-        else
-            return new RestaurantSuggestion(0, "None", 0, "None", "No reviews");
+
+        max = Collections.max(averageRatings);
 
         // Get the max integer's index
         for (int i = 0; i < averageRatings.size(); i++) {

@@ -19,7 +19,6 @@ public class BallotController {
     private ArrayList<IncomingRestaurant> randomRestaurants;
 
     public BallotController() {
-
     }
 
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
@@ -49,10 +48,19 @@ public class BallotController {
         restaurantsReviews = restaurantController.getRestaurantsReviews(randomRestaurants);
 
         // If there was not a ballot created
-        if(restaurantsReviews == null){
-            BallotInterface winner = new CreateBallot.BallotAfter();
-            //winner
-            return new ResponseEntity<BallotInterface>(winner, HttpStatus.BAD_REQUEST);
+        System.out.println(ballotId);
+        System.out.println(ballot.getBallotId());
+        UUID temp = ballot.getBallotId();
+
+        if (ballotId.toString().equals(ballot.getBallotId().toString())){
+            // Continue
+        }
+
+        else {
+            CreateBallot.BallotError ballotError = new CreateBallot.BallotError();
+            ballotError.setMessage("There is no ballotDate (which probably means you haven't created a ballot).");
+            BallotInterface message = ballotError;
+            return new ResponseEntity<BallotInterface>(message, HttpStatus.BAD_REQUEST);
         }
 
         System.out.println("Getting averageRatings");
@@ -86,7 +94,6 @@ public class BallotController {
         if(date.before(ballotDate)) {
             Collections.shuffle(restaurantChoicesBefore1);
             BallotInterface suggestion = new CreateBallot.BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
-            //return suggestion;
             return new ResponseEntity<BallotInterface>(suggestion, HttpStatus.OK);
         }
         else {// After the current date
@@ -107,16 +114,7 @@ public class BallotController {
 
             Collections.shuffle(restaurantChoicesAfter1);
             BallotInterface winner = new CreateBallot.BallotAfter(restaurantWinner, restaurantChoicesAfter1);
-            //return winner;
             return new ResponseEntity<BallotInterface>(winner, HttpStatus.OK);
         }
-
-    }
-
-    @RequestMapping(value = "/error", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<String> error(@PathVariable("ballotId") UUID ballotId){
-        String error = "There has been an error (there probably wasn't an GUID for the ballot, or if there was, it " +
-                "wasn't a correct one";
-        return new ResponseEntity<String>(error.toString(), HttpStatus.BAD_REQUEST);
     }
 }

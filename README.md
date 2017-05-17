@@ -16,6 +16,7 @@ Using the App:
 1. http://localhost:8080/api/create-ballot is to create a ballot
 Example post (using Postman)
 where raw and JSON are marked for the body and {"Content-Type":"application/json"} is marked on the headers:
+(and be patient, it may take a few)
 {
     "endTime":"5/16/17 12:32",
     "voters":[
