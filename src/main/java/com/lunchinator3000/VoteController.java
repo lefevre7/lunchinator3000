@@ -14,6 +14,7 @@ import java.util.UUID;
 
 /**
  * Created by Jeremy L on 5/11/2017.
+ * VoteController obtains obtains a voter's vote and records it if it's not past time.
  */
 @RestController
 public class VoteController {
@@ -51,11 +52,6 @@ public class VoteController {
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
-        if (votes.containsKey(emailAddress))
-            votes.replace(emailAddress, vote);
-        else
-            votes.put(emailAddress, vote);
-
         //recordVote(id, ballotId, voterName, emailAddress);
         System.out.println("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
@@ -63,6 +59,7 @@ public class VoteController {
         dateFormat.format(date);
         System.out.println(date);
 
+        // If the current date is before the ballot's time
         if(ballot.getTime().before(date)) {
 
             String error = "";
@@ -70,6 +67,11 @@ public class VoteController {
         }
         else
         {
+            if (votes.containsKey(emailAddress))
+                votes.replace(emailAddress, vote);
+            else
+                votes.put(emailAddress, vote);
+
             String message = "";
             return new ResponseEntity<String>(message, HttpStatus.OK);
         }

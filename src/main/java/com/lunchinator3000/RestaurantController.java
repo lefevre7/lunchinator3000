@@ -12,6 +12,7 @@ import java.util.*;
 
 /**
  * Created by Jeremy L on 5/11/2017.
+ * RestaurantController provides functions to obtain the restaurant suggestions, reviews, choices, and winner.
  */
 @RestController
 public class RestaurantController {

@@ -2,6 +2,7 @@ package com.lunchinator3000;
 
 /**
  * Created by Jeremy L on 5/10/2017.
+ * CreateBallot creates a new ballot from the initialBallot the user gives it.
  */
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -263,6 +264,10 @@ public class CreateBallot {
         }
     }
 
+    /**
+     *  This class' message will hold the error message so that it can
+     *  display any type of BallotInterface and return it in one object
+     */
     public static class BallotError implements BallotInterface{
         private String message = "Error";
 

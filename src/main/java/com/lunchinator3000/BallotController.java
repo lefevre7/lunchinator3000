@@ -13,6 +13,8 @@ import java.util.*;
 
 /**
  * Created by Jeremy L on 5/11/2017.
+ * BallotController obtains the ballotId, finds the proper ballot, obtains the restaurant suggestion,
+ * choices, and winner, then outputs the proper ones in JSON.
  */
 @RestController
 public class BallotController {

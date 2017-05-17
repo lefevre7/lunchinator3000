@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Created by Jeremy L on 5/16/2017.
- */
+ *//*
 @Controller
 public class ExceptionHandlingController {
 
@@ -19,4 +19,4 @@ public class ExceptionHandlingController {
     public void conflict() {
         //throw new CustomGenericException("E888", "This is custom message X");
     }
-}
+}*/

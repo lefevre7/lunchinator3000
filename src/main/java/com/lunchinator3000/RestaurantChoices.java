@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by Jeremy L on 5/16/2017.
  */
-public interface RestaurantChoices extends Restaurant {// extends RestaurantInterface{
+public interface RestaurantChoices extends Restaurant {
     ArrayList<RestaurantChoice> restaurantChoices = null;
 
     public ArrayList<RestaurantChoice> getRestaurantChoices();
