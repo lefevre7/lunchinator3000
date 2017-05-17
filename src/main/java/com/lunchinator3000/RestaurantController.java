@@ -209,7 +209,7 @@ public class RestaurantController {
                 System.out.println(averageRating);
 
             }
-            actualAverageRating = averageRating.floatValue() / (restaurantsReviews.get(i).size() - 1);
+            actualAverageRating = averageRating.floatValue() / (restaurantsReviews.get(i).size());
 
             System.out.println("Here is the actualAverageRating");
             System.out.println(actualAverageRating);

@@ -70,13 +70,13 @@ public class VoteController {
 
         if(ballot.getTime().before(date)) {
 
-            String error = "You voted after";
+            String error = "";
             return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
         }
         else
         {
-            String error = "You voted!";
-            return new ResponseEntity<String>(error, HttpStatus.OK);
+            String message = "";
+            return new ResponseEntity<String>(message, HttpStatus.OK);
         }
     }
 
