@@ -21,14 +21,12 @@ public class CreateBallot {
     private String endTime;
 
     @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, headers="Accept=application/json", consumes = "application/json", produces = "application/json")
-    public @ResponseBody ResponseEntity<String> createBallot(/*@JsonProperty("endTime")*/ @RequestBody InitialBallot1 initialBallot) {
+    public @ResponseBody ResponseEntity<String> createBallot(@RequestBody InitialBallot1 initialBallot) {
         String ballotId = null;
         System.out.println("Here is the initialBallot");
         System.out.println(initialBallot.getEndTime());
         System.out.println(initialBallot.getVoters().get(0).getName());
         System.out.println(initialBallot.getVoters().get(0).getEmailAddress());
-
-        //todo: check to see if there is an initial ballot and throw and error if there isn't
 
         Ballot1 ballot = null;
         try {

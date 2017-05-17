@@ -18,11 +18,8 @@ import java.util.UUID;
 @RestController
 public class VoteController {
 
-    //UUID ballotId;
-    //Time time;
-    //ArrayList<Voter> voters;
     private static HashMap<String,Vote> votes = null;
-    // (in a singleton way) (if there isn't one, then create one)
+    // Implemented (in a singleton way) (if there isn't one, then create one)
     // that makes a new one of them each day
 
     // Provides a global point of access
@@ -45,7 +42,6 @@ public class VoteController {
                                                  @RequestParam("emailAddress") String emailAddress) {
         System.out.println("In the /api/vote getVote method");
 
-        //todo: check to see if there is a ballot, and if there is not, throw an error
         // This is the correct way to get the votes
         VoteController voteController = new VoteController();
         HashMap<String,Vote> votes = voteController.getVotes();
@@ -60,8 +56,7 @@ public class VoteController {
         else
             votes.put(emailAddress, vote);
 
-            //recordVote(id, ballotId, voterName, emailAddress);
-        //return new ResponseEntity(votes, HttpStatus.OK);
+        //recordVote(id, ballotId, voterName, emailAddress);
         System.out.println("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();

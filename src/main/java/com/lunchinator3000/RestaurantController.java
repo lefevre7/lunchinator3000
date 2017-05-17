@@ -15,7 +15,7 @@ import java.util.*;
  */
 @RestController
 public class RestaurantController {
-    //private UUID ballotId;
+    private boolean restaurantsHaveBeenObtained = false;
 
     public RestaurantController() {
     }
