@@ -1,34 +1,48 @@
-package com.lunchinator3000;
+package com.lunchinator3000.dto.restaurant;
 
 /**
  * Created by Jeremy L on 5/11/2017.
  */
-public class RestaurantChoiceAfter implements RestaurantChoice {
+public class RestaurantWinner implements RestaurantInterface {
     private Integer id;
+    private String datetime;
     private String name;
-    private int votes = 0;
+    private int votes;
 
-    public RestaurantChoiceAfter() {
+    public RestaurantWinner() {
     }
 
-    public RestaurantChoiceAfter(int id, String name, int votes) {
+    public RestaurantWinner(int id, String name, String datetime, int votes) {
         this.name = name;
         this.id = id;
+        this.datetime = datetime;
         this.votes = votes;
     }
 
+    @Override
     public int getId() {
         return id;
     }
 
+    @Override
     public void setId(int id) {
         this.id = id;
     }
 
+    public String getDatetime() {
+        return datetime;
+    }
+
+    public void setDatetime(String datetime) {
+        this.datetime = datetime;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -40,9 +54,4 @@ public class RestaurantChoiceAfter implements RestaurantChoice {
     public void setVotes(int votes) {
         this.votes = votes;
     }
-
-    public void incrementVotes() {
-        this.votes = this.votes++;
-    }
-
 }

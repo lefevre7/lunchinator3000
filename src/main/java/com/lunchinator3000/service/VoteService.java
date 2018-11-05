@@ -1,23 +1,20 @@
-package com.lunchinator3000;
+package com.lunchinator3000.service;
 
+import com.lunchinator3000.controllers.VoteController;
+import com.lunchinator3000.dto.vote.Vote;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- * Created by Jeremy L on 5/11/2017.
- * VoteController obtains obtains a voter's vote and records it if it's not past time.
- */
-@RestController
-public class VoteController {
+public class VoteService {
+
 
     private static HashMap<String,Vote> votes = null;
     // Implemented (in a singleton way) (if there isn't one, then create one)
@@ -33,22 +30,18 @@ public class VoteController {
     }
 
     // Prevents any other class from instantiating it
-    public VoteController() {
+    public VoteService() {
     }
 
 
-    @RequestMapping(value = "/api/vote", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
-                                                 @RequestParam("voterName") String voterName,
-                                                 @RequestParam("emailAddress") String emailAddress) {
-        System.out.println("In the /api/vote getVote method");
+    public static ResponseEntity<String> getVote(int id, UUID ballotId, String voterName, String emailAddress) {
 
         // This is the correct way to get the votes
-        VoteController voteController = new VoteController();
-        HashMap<String,Vote> votes = voteController.getVotes();
+        VoteService voteService = new VoteService();
+        HashMap<String, Vote> votes = voteService.getVotes();
 
-        CreateBallot createBallot = new CreateBallot();
-        CreateBallot.Ballot1 ballot = createBallot.getBallot();
+        BallotService createBallot = new BallotService();
+        BallotService.Ballot1 ballot = createBallot.getBallot();
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
@@ -60,13 +53,11 @@ public class VoteController {
         System.out.println(date);
 
         // If the current date is before the ballot's time
-        if(ballot.getTime().before(date)) {
+        if (ballot.getTime().before(date)) {
 
             String error = "";
             return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
-        }
-        else
-        {
+        } else {
             if (votes.containsKey(emailAddress))
                 votes.replace(emailAddress, vote);
             else
@@ -93,5 +84,4 @@ public class VoteController {
         }
 
     }*/
-
 }

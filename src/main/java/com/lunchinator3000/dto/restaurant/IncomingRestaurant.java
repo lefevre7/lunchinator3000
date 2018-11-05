@@ -1,4 +1,4 @@
-package com.lunchinator3000;
+package com.lunchinator3000.dto.restaurant;
 
 /**
  * Created by Jeremy L on 5/11/2017.

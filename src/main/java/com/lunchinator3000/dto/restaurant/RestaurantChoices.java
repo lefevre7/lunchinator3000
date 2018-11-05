@@ -1,4 +1,4 @@
-package com.lunchinator3000;
+package com.lunchinator3000.dto.restaurant;
 
 import java.util.ArrayList;
 

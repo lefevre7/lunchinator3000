@@ -1,11 +1,11 @@
-package com.lunchinator3000;
+package com.lunchinator3000.dto.restaurant;
 
 import java.util.ArrayList;
 
 /**
  * Created by Jeremy L on 5/15/2017.
  */
-public class RestaurantChoicesAfter implements RestaurantChoices {
+public class RestaurantChoicesBefore implements RestaurantChoices {
     private ArrayList<RestaurantChoice> restaurantChoices = new ArrayList<>();
 
     @Override

@@ -1,35 +1,133 @@
-package com.lunchinator3000;
+package com.lunchinator3000.service;
 
-/**
- * Created by Jeremy L on 5/10/2017.
- * CreateBallot creates a new ballot from the initialBallot the user gives it.
- */
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.UUID;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lunchinator3000.controllers.VoteController;
+import com.lunchinator3000.dto.ballot.BallotInterface;
+import com.lunchinator3000.dto.restaurant.*;
+import com.lunchinator3000.dto.vote.Vote;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
-import static com.lunchinator3000.CreateBallot.Ballot1.getBallot1;
+import java.io.IOException;
+import java.net.URI;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
-@RestController
-public class CreateBallot {
-    private UUID ballotId;
-    private String endTime;
+import static com.lunchinator3000.service.BallotService.Ballot1.getBallot1;
 
-    @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, headers="Accept=application/json", consumes = "application/json", produces = "application/json")
-    public @ResponseBody ResponseEntity<String> createBallot(@RequestBody InitialBallot1 initialBallot) {
+public class BallotService {
+
+    private static ArrayList<IncomingRestaurant> randomRestaurants;
+    private static UUID ballotId;
+    private static String endTime;
+
+    public static ResponseEntity<BallotInterface> getBallot(UUID ballotId) {
+        ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
+        ArrayList<Integer> averageRatings;
+        RestaurantSuggestion restaurantSuggestion = new RestaurantSuggestion();
+
+        ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList();
+        ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList();
+        // To make them compatible with the created interfaces
+        ArrayList<RestaurantChoice> restaurantChoicesAfter1 = new ArrayList();
+        ArrayList<RestaurantChoice> restaurantChoicesBefore1 = new ArrayList();
+
+        RestaurantWinner restaurantWinner = new RestaurantWinner();
+
+        BallotService ballotService = new BallotService();
+        BallotService.Ballot1 ballot = ballotService.getBallot();
+
+        System.out.println("In the getBallot() method.");
+
+
+        System.out.println("Creating new restaurant controller");
+        RestaurantService restaurantService = new RestaurantService();
+        randomRestaurants = ballot.getRestaurants();
+        restaurantsReviews = restaurantService.getRestaurantsReviews(randomRestaurants);
+
+        // If there was a ballot created
+        System.out.println(ballotId);
+        System.out.println(ballot.getBallotId());
+        if (ballotId.toString().equals(ballot.getBallotId().toString())){
+            // Continue
+        }
+
+        else { // If there was not a ballot created
+            BallotService.BallotError ballotError = new BallotService.BallotError();
+            ballotError.setMessage("There is no ballotId (which probably means you haven't created a ballot or requested a previous one).");
+            BallotInterface message = ballotError;
+            return new ResponseEntity<BallotInterface>(message, HttpStatus.BAD_REQUEST);
+        }
+
+        System.out.println("Getting averageRatings");
+        averageRatings = restaurantService.getAverageRestaurantRating(restaurantsReviews);
+
+        restaurantSuggestion = restaurantService.getRestaurantSuggestion(averageRatings, restaurantsReviews, randomRestaurants);
+        restaurantChoicesBefore = restaurantService.getRestaurantChoiceBefore(averageRatings, randomRestaurants);
+
+        // Make it so the restaurantChoicesBefore is compatible with the suggestion object
+        System.out.println("Here are the restaruantChoicesBefore");
+        for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
+            System.out.println(restaurantChoicesBefore.get(i).getName());
+            System.out.println(restaurantChoicesBefore.get(i).getDescription());
+            restaurantChoicesBefore1.add(restaurantChoicesBefore.get(i));
+        }
+
+        // Getting the most current date and time as possible
+        System.out.println("Printing date in MMM dd, yyyy HH:mma");
+        DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
+        Date date = new Date();
+        dateFormat.format(date);
+        System.out.println(date);
+
+        Date ballotDate = ballot.getTime();
+        dateFormat.format(ballotDate);
+        System.out.println("Printing ballotDate");
+        System.out.println(ballotDate);
+        System.out.println(dateFormat.format(ballotDate));
+
+
+        if(date.before(ballotDate)) {
+            Collections.shuffle(restaurantChoicesBefore1);
+            BallotInterface suggestion = new BallotBefore(restaurantSuggestion, restaurantChoicesBefore1);
+            return new ResponseEntity<BallotInterface>(suggestion, HttpStatus.OK);
+        }
+        else {// After the current date
+            VoteService voteService = new VoteService();
+            HashMap<String,Vote> votes = voteService.getVotes();
+
+            restaurantChoicesAfter = restaurantService.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
+
+            // Make it so the restaurantChoicesAfter is compatible with the restaurantWinner object
+            System.out.println("Here are the restaruantChoicesAfter");
+            for (int i = 0; i < restaurantChoicesAfter.size(); i++) {
+                System.out.println(restaurantChoicesAfter.get(i).getName());
+                System.out.println(restaurantChoicesAfter.get(i).getVotes());
+                restaurantChoicesAfter1.add(restaurantChoicesAfter.get(i));
+            }
+            restaurantWinner = restaurantService.getRestaurantWinner(restaurantChoicesAfter);
+            restaurantWinner.setDatetime(dateFormat.format(ballotDate));
+
+            Collections.shuffle(restaurantChoicesAfter1);
+            BallotInterface winner = new BallotAfter(restaurantWinner, restaurantChoicesAfter1);
+            return new ResponseEntity<BallotInterface>(winner, HttpStatus.OK);
+        }
+    }
+
+    public static ResponseEntity<String> createBallot(BallotService.InitialBallot1 initialBallot) {
         String ballotId = null;
         System.out.println("Here is the initialBallot");
         System.out.println(initialBallot.getEndTime());
         System.out.println(initialBallot.getVoters().get(0).getName());
         System.out.println(initialBallot.getVoters().get(0).getEmailAddress());
 
-        Ballot1 ballot = null;
+        BallotService.Ballot1 ballot = null;
         try {
             ballot = getNewBallot(initialBallot);
         } catch (ParseException e) {
@@ -40,25 +138,26 @@ public class CreateBallot {
         ballotId = "{\n\t\"ballotId\":\"" + ballot.getBallotId().toString() + "\"\n}"; // Format it like JSON
         return new ResponseEntity<String>(ballotId, HttpStatus.CREATED);
     }
-    private Ballot1 getNewBallot(InitialBallot1 initialBallot) throws ParseException { //Ballot1 ballot1 = createBallot.getBallot() is how you access the ballot
+    private static BallotService.Ballot1 getNewBallot(BallotService.InitialBallot1 initialBallot) throws ParseException { //Ballot1 ballot1 = createBallot.getBallot() is how you access the ballot
         ballotId = UUID.randomUUID();
-        Ballot1 ballot1 = getBallot1();
+        BallotService.Ballot1 ballot1 = getBallot1();
         ballot1.setBallotId(ballotId);
 
+        //todo: add support for 12 hr time and update readme
         endTime = initialBallot.getEndTime();
         Date date = new SimpleDateFormat("MM/dd/yy HH:mm").parse(endTime);
         ballot1.setTime(date);
 
         ballot1.setVoters(initialBallot.getVoters());
-        RestaurantController restaurantController = new RestaurantController();
+        RestaurantService restaurantService = new RestaurantService();
 
-        ArrayList<IncomingRestaurant> randomRestaurants = restaurantController.getRestaurants();
+        ArrayList<IncomingRestaurant> randomRestaurants = restaurantService.getRestaurants();
         ballot1.setRestaurants(randomRestaurants);
 
         return ballot1;
     }
 
-    public Ballot1 getBallot() { //CreateBallot creatBallot; Ballot1 ballot1 = createBallot.getBallot(); is how you access the ballot
+    public BallotService.Ballot1 getBallot() { //CreateBallot creatBallot; Ballot1 ballot1 = createBallot.getBallot(); is how you access the ballot
         return getBallot1();
     }
 
@@ -68,9 +167,9 @@ public class CreateBallot {
      */
     public static class InitialBallot1 {
         private String endTime;
-        private ArrayList<Voter1> voters;
+        private ArrayList<BallotService.Voter1> voters;
 
-        public InitialBallot1(String endTime, ArrayList<Voter1> voters) {
+        public InitialBallot1(String endTime, ArrayList<BallotService.Voter1> voters) {
             this.voters = voters;
             this.endTime = endTime;
         }
@@ -78,11 +177,11 @@ public class CreateBallot {
 
         }
 
-        public ArrayList<Voter1> getVoters() {
+        public ArrayList<BallotService.Voter1> getVoters() {
             return voters;
         }
 
-        public void setVoters(ArrayList<Voter1> voters) {
+        public void setVoters(ArrayList<BallotService.Voter1> voters) {
             this.voters = voters;
         }
 
@@ -137,12 +236,12 @@ public class CreateBallot {
     public static class Ballot1 {
         private UUID ballotId;
         private Date endTime;
-        private ArrayList<Voter1> voters;
+        private ArrayList<BallotService.Voter1> voters;
         private ArrayList<IncomingRestaurant> restaurants;
 
         private static Ballot1 ballot1;
 
-        private Ballot1(UUID ballotId, Date time, ArrayList<Voter1> voters, ArrayList<IncomingRestaurant> restaurants) {
+        private Ballot1(UUID ballotId, Date time, ArrayList<BallotService.Voter1> voters, ArrayList<IncomingRestaurant> restaurants) {
             this.ballotId = ballotId;
             this.endTime = time;
             this.voters = voters;
@@ -179,11 +278,11 @@ public class CreateBallot {
             this.endTime = time;
         }
 
-        public ArrayList<Voter1> getVoters() {
+        public ArrayList<BallotService.Voter1> getVoters() {
             return voters;
         }
 
-        public void setVoters(ArrayList<Voter1> voters) {
+        public void setVoters(ArrayList<BallotService.Voter1> voters) {
             this.voters = voters;
         }
 
@@ -200,7 +299,7 @@ public class CreateBallot {
      *  This class' ArrayList will hold the suggestion and the choices before time is up for the ballot so that it can
      *  display any type of RestaurantInterface and return it in one object
      */
-    public static class BallotBefore implements BallotInterface{
+    public static class BallotBefore implements BallotInterface {
         private RestaurantSuggestion suggestion;
         private ArrayList<RestaurantChoice> restaurantChoices;
 

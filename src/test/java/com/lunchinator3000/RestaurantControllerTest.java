@@ -1,5 +1,12 @@
 package com.lunchinator3000;
 
+import com.lunchinator3000.dto.restaurant.RestaurantChoiceAfter;
+import com.lunchinator3000.dto.restaurant.RestaurantChoiceBefore;
+import com.lunchinator3000.dto.restaurant.RestaurantReview;
+import com.lunchinator3000.dto.restaurant.RestaurantWinner;
+import com.lunchinator3000.dto.vote.Vote;
+import com.lunchinator3000.service.BallotService;
+import com.lunchinator3000.service.RestaurantService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,22 +14,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Jeremy L on 5/16/2017.
  */
 public class RestaurantControllerTest {
     @Test
     public void getRestaurantChoicesAfter() throws Exception {
-        RestaurantController restaurantController = new RestaurantController();
+        RestaurantService restaurantService = new RestaurantService();
         HashMap<String,Vote> votes = new HashMap<>();
         UUID uuid = new UUID(12, 12);
         votes.put("someone@gmail.com",new Vote(uuid, "someone@gmail.com", 2, "Someone"));
         ArrayList<RestaurantChoiceBefore> restaurantChoicesBefore = new ArrayList<>();
         restaurantChoicesBefore.add(new RestaurantChoiceBefore(2, "Hi", 4, "Here's the description"));
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
-        ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter1 = restaurantController.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
+        ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter1 = restaurantService.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
         restaurantChoicesAfter.add(new RestaurantChoiceAfter(2, "Hi", 1));
 
         Assert.assertEquals(restaurantChoicesAfter.get(0).getName(), restaurantChoicesAfter1.get(0).getName());
@@ -33,7 +38,7 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurantWinner() throws Exception {
 
-        RestaurantController restaurantController = new RestaurantController();
+        RestaurantService restaurantService = new RestaurantService();
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
         restaurantChoicesAfter.add(new RestaurantChoiceAfter(2, "Hi", 1));
         restaurantChoicesAfter.add(new RestaurantChoiceAfter(4, "High", 2));
@@ -41,7 +46,7 @@ public class RestaurantControllerTest {
         restaurantChoicesAfter.add(new RestaurantChoiceAfter(7, "Highest", 4));
         RestaurantWinner restaurantWinner = new RestaurantWinner();
 
-        restaurantWinner = restaurantController.getRestaurantWinner(restaurantChoicesAfter);
+        restaurantWinner = restaurantService.getRestaurantWinner(restaurantChoicesAfter);
 
         Assert.assertEquals(restaurantWinner.getName(), "Highest");
         Assert.assertEquals(restaurantWinner.getId(), 7);
@@ -68,9 +73,9 @@ public class RestaurantControllerTest {
         restaurantReviews.add(restaurantReview1);
         restaurantsReviews.add(restaurantReviews);
 
-        RestaurantController restaurantController = new RestaurantController();
+        RestaurantService restaurantService = new RestaurantService();
         ArrayList<Integer> averageRatings = new ArrayList<>();
-        averageRatings = restaurantController.getAverageRestaurantRating(restaurantsReviews);
+        averageRatings = restaurantService.getAverageRestaurantRating(restaurantsReviews);
         ArrayList<Integer> averageRatings1 = new ArrayList<>();
         averageRatings1.add(4);
 
