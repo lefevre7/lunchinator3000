@@ -24,9 +24,7 @@ public class VoteController {
     public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
                                                  @RequestParam("voterName") String voterName,
                                                  @RequestParam("emailAddress") String emailAddress) {
-        return VoteService.getVote(id, ballotId, voterName, emailAddress);
+        VoteService voteService = new VoteService();
+        return voteService.getVote(id, ballotId, voterName, emailAddress);
     }
-
-
-
 }

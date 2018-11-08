@@ -1,15 +1,11 @@
 package com.lunchinator3000.controllers;
 
 import com.lunchinator3000.dto.ballot.BallotInterface;
-import com.lunchinator3000.dto.restaurant.*;
-import com.lunchinator3000.dto.vote.Vote;
+import com.lunchinator3000.dto.ballot.InitialBallot;
 import com.lunchinator3000.service.BallotService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -20,14 +16,16 @@ import java.util.*;
 @RestController
 public class BallotController {
 
+
     @RequestMapping(value = "/api/ballot/{ballotId}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<BallotInterface> getBallot (@PathVariable("ballotId") UUID ballotId) {
-        return BallotService.getBallot(ballotId);
+        BallotService ballotService = new BallotService();
+        return ballotService.getBallot(ballotId);
     }
 
     @RequestMapping(value = "/api/create-ballot", method = RequestMethod.POST, headers="Accept=application/json", consumes = "application/json", produces = "application/json")
-    public @ResponseBody
-    ResponseEntity<String> createBallot(@RequestBody BallotService.InitialBallot1 initialBallot) {
-        return BallotService.createBallot(initialBallot);
+    public @ResponseBody ResponseEntity<String> createBallot(@RequestBody InitialBallot initialBallot) {
+        BallotService ballotService = new BallotService();
+        return ballotService.createBallot(initialBallot);
     }
 }

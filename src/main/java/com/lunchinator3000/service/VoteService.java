@@ -1,11 +1,9 @@
 package com.lunchinator3000.service;
 
-import com.lunchinator3000.controllers.VoteController;
+import com.lunchinator3000.dto.ballot.Ballot;
 import com.lunchinator3000.dto.vote.Vote;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,14 +32,14 @@ public class VoteService {
     }
 
 
-    public static ResponseEntity<String> getVote(int id, UUID ballotId, String voterName, String emailAddress) {
+    public ResponseEntity<String> getVote(int id, UUID ballotId, String voterName, String emailAddress) {
 
         // This is the correct way to get the votes
         VoteService voteService = new VoteService();
         HashMap<String, Vote> votes = voteService.getVotes();
 
         BallotService createBallot = new BallotService();
-        BallotService.Ballot1 ballot = createBallot.getBallot();
+        Ballot ballot = createBallot.getBallot();
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
