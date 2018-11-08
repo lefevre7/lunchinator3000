@@ -5,6 +5,7 @@ import com.lunchinator3000.dto.restaurant.*;
 import com.lunchinator3000.dto.vote.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import java.text.DateFormat;
@@ -17,6 +18,13 @@ public class BallotService {
     private static ArrayList<IncomingRestaurant> randomRestaurants;
     private static UUID ballotId;
     private static String endTime;
+    private RestaurantWinner restaurantWinner;
+    private RestaurantService restaurantService;
+
+    @Autowired
+    public BallotService(RestaurantService restaurantService) {
+        this.restaurantService = restaurantService;
+    }
 
     public ResponseEntity<BallotInterface> getBallot(UUID ballotId) {
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews;
@@ -29,16 +37,9 @@ public class BallotService {
         ArrayList<RestaurantChoice> restaurantChoicesAfter1 = new ArrayList();
         ArrayList<RestaurantChoice> restaurantChoicesBefore1 = new ArrayList();
 
-        RestaurantWinner restaurantWinner = new RestaurantWinner();
+        Ballot ballot = getBallot();
 
-        BallotService ballotService = new BallotService();
-        Ballot ballot = ballotService.getBallot();
-
-        logger.debug("In the getBallot() method.");
-
-
-        logger.debug("Creating new restaurant controller");
-        RestaurantService restaurantService = new RestaurantService();
+        logger.debug("Creating new restaurant service");
         randomRestaurants = ballot.getRestaurants();
         restaurantsReviews = restaurantService.getRestaurantsReviews(randomRestaurants);
 
@@ -91,8 +92,7 @@ public class BallotService {
             return new ResponseEntity<BallotInterface>(suggestion, HttpStatus.OK);
         }
         else {// After the current date
-            VoteService voteService = new VoteService();
-            HashMap<String,Vote> votes = voteService.getVotes();
+            HashMap<String,Vote> votes = VoteService.getVotes();
 
             restaurantChoicesAfter = restaurantService.getRestaurantChoicesAfter(votes, restaurantChoicesBefore);
 
@@ -142,7 +142,6 @@ public class BallotService {
         ballot.setTime(date);
 
         ballot.setVoters(initialBallot.getVoters());
-        RestaurantService restaurantService = new RestaurantService();
 
         ArrayList<IncomingRestaurant> randomRestaurants = restaurantService.getRestaurants();
         ballot.setRestaurants(randomRestaurants);

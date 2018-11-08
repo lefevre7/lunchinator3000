@@ -3,6 +3,7 @@ package com.lunchinator3000.controllers;
 import com.lunchinator3000.dto.vote.Vote;
 import com.lunchinator3000.service.BallotService;
 import com.lunchinator3000.service.VoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +21,17 @@ import java.util.UUID;
 @RestController
 public class VoteController {
 
+    private VoteService voteService;
+
+    @Autowired
+    public VoteController(VoteService voteService) {
+        this.voteService = voteService;
+    }
+
     @RequestMapping(value = "/api/vote", method = RequestMethod.POST)
     public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
                                                  @RequestParam("voterName") String voterName,
                                                  @RequestParam("emailAddress") String emailAddress) {
-        VoteService voteService = new VoteService();
         return voteService.getVote(id, ballotId, voterName, emailAddress);
     }
 }

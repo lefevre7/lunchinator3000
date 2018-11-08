@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -32,7 +33,13 @@ public class RestaurantService {
 
     private final Logger logger = LoggerFactory.getLogger(RestaurantService.class);
 
-    public RestaurantService() {
+    private RestTemplate restTemplate;
+    private ObjectMapper mapper;
+
+    @Autowired
+    public RestaurantService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.restTemplate = restTemplate;
+        this.mapper = objectMapper;
     }
 
     public @ResponseBody
@@ -42,9 +49,6 @@ public class RestaurantService {
 
         JsonNode rootNode = null;
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject("https://interview-project-17987.herokuapp.com/api/restaurants", String.class);
 
         logger.info("Getting incoming restaurants");
@@ -145,8 +149,6 @@ public class RestaurantService {
     public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<IncomingRestaurant> incomingRestaurants) {
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
 
-        ObjectMapper mapper = new ObjectMapper();
-
         if (incomingRestaurants != null) {
             logger.info("Getting incoming restaurantReviews");
             for (int i = 0; i < incomingRestaurants.size(); i++) {
@@ -156,8 +158,6 @@ public class RestaurantService {
                 logger.debug(url);
 
                 JsonNode rootNode = null;
-
-                RestTemplate restTemplate = new RestTemplate();
 
                 URI url1 = URI.create("https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20"));
                 String result = restTemplate.getForObject(url1, String.class);

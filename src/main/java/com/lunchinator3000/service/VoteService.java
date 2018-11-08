@@ -4,6 +4,7 @@ import com.lunchinator3000.dto.ballot.Ballot;
 import com.lunchinator3000.dto.vote.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 public class VoteService {
 
     private final Logger logger = LoggerFactory.getLogger(VoteService.class);
+    private BallotService ballotService;
 
     private static HashMap<String,Vote> votes = null;
     // Implemented (in a singleton way) (if there isn't one, then create one)
@@ -30,19 +32,17 @@ public class VoteService {
         return votes;
     }
 
-    // Prevents any other class from instantiating it
-    public VoteService() {
+    @Autowired
+    public VoteService(BallotService ballotService) {
+        this.ballotService = ballotService;
     }
 
 
     public ResponseEntity<String> getVote(int id, UUID ballotId, String voterName, String emailAddress) {
 
-        // This is the correct way to get the votes
-        VoteService voteService = new VoteService();
-        HashMap<String, Vote> votes = voteService.getVotes();
+        HashMap<String, Vote> votes = getVotes();
 
-        BallotService createBallot = new BallotService();
-        Ballot ballot = createBallot.getBallot();
+        Ballot ballot = ballotService.getBallot();
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
@@ -56,7 +56,7 @@ public class VoteService {
         // If the current date is before the ballot's time
         if (ballot.getTime().before(date)) {
 
-            String error = "";
+            String error = "Vote not counted";
             return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
         } else {
             if (votes.containsKey(emailAddress))
