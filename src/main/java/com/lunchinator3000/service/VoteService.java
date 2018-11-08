@@ -2,6 +2,8 @@ package com.lunchinator3000.service;
 
 import com.lunchinator3000.dto.ballot.Ballot;
 import com.lunchinator3000.dto.vote.Vote;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -13,6 +15,7 @@ import java.util.UUID;
 
 public class VoteService {
 
+    private final Logger logger = LoggerFactory.getLogger(VoteService.class);
 
     private static HashMap<String,Vote> votes = null;
     // Implemented (in a singleton way) (if there isn't one, then create one)
@@ -44,11 +47,11 @@ public class VoteService {
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
         //recordVote(id, ballotId, voterName, emailAddress);
-        System.out.println("Printing date in MMM dd, yyyy HH:mma");
+        logger.debug("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();
         dateFormat.format(date);
-        System.out.println(date);
+        logger.debug(String.valueOf(date));
 
         // If the current date is before the ballot's time
         if (ballot.getTime().before(date)) {
@@ -61,7 +64,9 @@ public class VoteService {
             else
                 votes.put(emailAddress, vote);
 
-            String message = "";
+            String message = "Your vote has been cast";
+
+            logger.info("A vote has been cast");
             return new ResponseEntity<String>(message, HttpStatus.OK);
         }
     }
