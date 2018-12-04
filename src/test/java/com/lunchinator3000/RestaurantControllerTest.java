@@ -1,15 +1,18 @@
 package com.lunchinator3000;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lunchinator3000.db.SheetsDb;
 import com.lunchinator3000.dto.restaurant.RestaurantChoiceAfter;
 import com.lunchinator3000.dto.restaurant.RestaurantChoiceBefore;
 import com.lunchinator3000.dto.restaurant.RestaurantReview;
 import com.lunchinator3000.dto.restaurant.RestaurantWinner;
 import com.lunchinator3000.dto.vote.Vote;
-import com.lunchinator3000.service.BallotService;
+import com.lunchinator3000.service.DbService;
 import com.lunchinator3000.service.RestaurantService;
 import org.junit.Assert;
 import org.junit.Test;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -22,7 +25,7 @@ import java.util.UUID;
 public class RestaurantControllerTest {
     @Test
     public void getRestaurantChoicesAfter() throws Exception {
-        RestaurantService restaurantService = new RestaurantService(new RestTemplate(), new ObjectMapper());
+        RestaurantService restaurantService = new RestaurantService(new RestTemplate(), new ObjectMapper(), new DbService(new SheetsDb(new ChromeDriver())));
         HashMap<String,Vote> votes = new HashMap<>();
         UUID uuid = new UUID(12, 12);
         votes.put("someone@gmail.com",new Vote(uuid, "someone@gmail.com", 2, "Someone"));
@@ -40,7 +43,7 @@ public class RestaurantControllerTest {
     @Test
     public void getRestaurantWinner() throws Exception {
 
-        RestaurantService restaurantService = new RestaurantService(new RestTemplate(), new ObjectMapper());
+        RestaurantService restaurantService = new RestaurantService(new RestTemplate(), new ObjectMapper(), new DbService(new SheetsDb(new ChromeDriver())));
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
         restaurantChoicesAfter.add(new RestaurantChoiceAfter(2, "Hi", 1));
         restaurantChoicesAfter.add(new RestaurantChoiceAfter(4, "High", 2));
@@ -75,7 +78,7 @@ public class RestaurantControllerTest {
         restaurantReviews.add(restaurantReview1);
         restaurantsReviews.add(restaurantReviews);
 
-        RestaurantService restaurantService = new RestaurantService(new RestTemplate(), new ObjectMapper());
+        RestaurantService restaurantService = new RestaurantService(new RestTemplate(), new ObjectMapper(), new DbService(new SheetsDb(new ChromeDriver())));
         ArrayList<Integer> averageRatings = new ArrayList<>();
         averageRatings = restaurantService.getAverageRestaurantRating(restaurantsReviews);
         ArrayList<Integer> averageRatings1 = new ArrayList<>();

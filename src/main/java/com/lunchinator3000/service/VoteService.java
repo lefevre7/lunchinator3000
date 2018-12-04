@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,6 +19,7 @@ public class VoteService {
 
     private final Logger logger = LoggerFactory.getLogger(VoteService.class);
     private BallotService ballotService;
+    private DbService dbService;
 
     private static HashMap<String,Vote> votes = null;
     // Implemented (in a singleton way) (if there isn't one, then create one)
@@ -33,7 +35,8 @@ public class VoteService {
     }
 
     @Autowired
-    public VoteService(BallotService ballotService) {
+    public VoteService(BallotService ballotService, DbService dbService) {
+        this.dbService = dbService;
         this.ballotService = ballotService;
     }
 
@@ -47,6 +50,8 @@ public class VoteService {
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
         //recordVote(id, ballotId, voterName, emailAddress);
+        dbService.recordVote();
+
         logger.debug("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();

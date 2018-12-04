@@ -19,8 +19,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 
+import com.lunchinator3000.dto.vote.Voter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,15 +35,17 @@ public class RestaurantService {
 
     private RestTemplate restTemplate;
     private ObjectMapper mapper;
+    private DbService dbService;
 
     @Autowired
-    public RestaurantService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public RestaurantService(RestTemplate restTemplate, ObjectMapper objectMapper, DbService dbService) {
         this.restTemplate = restTemplate;
         this.mapper = objectMapper;
+        this.dbService = dbService;
     }
 
     public @ResponseBody
-    ArrayList<IncomingRestaurant> getRestaurants() {
+    ArrayList<IncomingRestaurant> getRestaurants(ArrayList<Voter> voters) {
         ArrayList<IncomingRestaurant> incomingRestaurants = new ArrayList<IncomingRestaurant>();
         ArrayList<IncomingRestaurant> fiveRandomRestaurants = null;
 
@@ -77,7 +79,7 @@ public class RestaurantService {
 
         //get the five random restaurants
         logger.debug("Getting 5 random restaurants");
-        fiveRandomRestaurants = randomlyPick5Restaurants(incomingRestaurants);
+        fiveRandomRestaurants = randomlyPick5Restaurants(incomingRestaurants, voters);
         logger.debug("Printing five restaurants");
         logger.debug(fiveRandomRestaurants.get(0).getName());
         logger.debug(fiveRandomRestaurants.get(1).getName());
@@ -185,17 +187,33 @@ public class RestaurantService {
                 logger.debug(String.valueOf(restaurantReviews));
                 restaurantsReviews.add(restaurantReviews);
             }
-        } else
-        {} //return null; //todo: maybe do something more
+        } else {}
+
         return restaurantsReviews;
     }
     //can make almost all methods here private (because they're only used by this one RestaurantController class) if I have time
-    private ArrayList<IncomingRestaurant> randomlyPick5Restaurants(ArrayList<IncomingRestaurant> incomingRestaurants) {
+    private ArrayList<IncomingRestaurant> randomlyPick5Restaurants(ArrayList<IncomingRestaurant> incomingRestaurants, ArrayList<Voter> voters) {
         ArrayList<IncomingRestaurant> randomTemp = incomingRestaurants;
         ArrayList<IncomingRestaurant> randomRestaurants = new ArrayList<>();
+        ArrayList<ArrayList<String>> weekOfBallots = dbService.getAWeekOfBallots();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        ArrayList<ArrayList<String>> previousVoters = objectMapper.readValue((ArrayList<ArrayList<String>>) weekOfBallots.get(2), ArrayList.class);
+        ArrayList<String> previousVoters = weekOfBallots.get(2);
+        String[] previousVotersArray = weekOfBallots.get(2).toArray(new String[0]);
+//        for (int i = 0; i < previousVotersArray.length; i++) {
+//            ArrayList<String> previousVotersArrayList = (ArrayList<String>) previousVotersArray[i];
+//        }
+
         Collections.shuffle(randomTemp);
-        for (int i = 0; i < 5; i++)
-            randomRestaurants.add(randomTemp.get(i));
+        int numOfRandomRestaurants = 5;
+        for (int i = 0; i < numOfRandomRestaurants; i++) {
+                if (!weekOfBallots.get(1).contains(randomTemp.get(i).getId()) && !weekOfBallots.get(2).containsAll(voters)) {
+                    randomRestaurants.add(randomTemp.get(i));
+                }
+                else {
+                    numOfRandomRestaurants++;
+                }
+        }
 
         return randomRestaurants;
     }

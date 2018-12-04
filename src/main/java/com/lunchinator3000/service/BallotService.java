@@ -20,10 +20,12 @@ public class BallotService {
     private static String endTime;
     private RestaurantWinner restaurantWinner;
     private RestaurantService restaurantService;
+    private DbService dbService;
 
     @Autowired
-    public BallotService(RestaurantService restaurantService) {
+    public BallotService(RestaurantService restaurantService, DbService dbService) {
         this.restaurantService = restaurantService;
+        this.dbService = dbService;
     }
 
     public ResponseEntity<BallotInterface> getBallot(UUID ballotId) {
@@ -105,6 +107,7 @@ public class BallotService {
             }
             restaurantWinner = restaurantService.getRestaurantWinner(restaurantChoicesAfter);
             restaurantWinner.setDatetime(dateFormat.format(ballotDate));
+            dbService.insertWinner(restaurantWinner, ballot.getVoters());
 
             Collections.shuffle(restaurantChoicesAfter1);
             BallotInterface winner = new BallotAfter(restaurantWinner, restaurantChoicesAfter1);
@@ -143,7 +146,7 @@ public class BallotService {
 
         ballot.setVoters(initialBallot.getVoters());
 
-        ArrayList<IncomingRestaurant> randomRestaurants = restaurantService.getRestaurants();
+        ArrayList<IncomingRestaurant> randomRestaurants = restaurantService.getRestaurants(initialBallot.getVoters());
         ballot.setRestaurants(randomRestaurants);
 
         return ballot;

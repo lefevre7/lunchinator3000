@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lunchinator3000.controllers.BallotController;
 import com.lunchinator3000.controllers.VoteController;
 import com.lunchinator3000.service.BallotService;
+import com.lunchinator3000.service.DbService;
 import com.lunchinator3000.service.RestaurantService;
 import com.lunchinator3000.service.VoteService;
 import org.springframework.context.annotation.Bean;
@@ -20,13 +21,13 @@ public class Config {
     public ObjectMapper objectMapper() {return new ObjectMapper();}
 
     @Bean
-    public RestaurantService restaurantService(RestTemplate restTemplate) {return new RestaurantService(restTemplate, objectMapper());}
+    public RestaurantService restaurantService(RestTemplate restTemplate, DbService dbService) {return new RestaurantService(restTemplate, objectMapper(), dbService);}
 
     @Bean
-    public BallotService ballotService(RestaurantService restaurantService) {return new BallotService(restaurantService);}
+    public BallotService ballotService(RestaurantService restaurantService, DbService dbService) {return new BallotService(restaurantService, dbService);}
 
     @Bean
-    public VoteService voteService(BallotService ballotService) {return new VoteService(ballotService);}
+    public VoteService voteService(BallotService ballotService, DbService dbService) {return new VoteService(ballotService, dbService);}
 
     @Bean
     public BallotController ballotController(BallotService ballotService) {

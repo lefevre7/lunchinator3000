@@ -12,6 +12,11 @@ server:
   # Set server port, or set to 0 to bind to any open port
   port: 8080
 
+db:
+  sheets:
+    url: "https://docs.google.com/spreadsheets/d/1w3A5sTDrumQglLWlUDlmqUkBJObU5ML1r_g--BxJcFM/edit"
+#    url: "https://spreadsheets.google.com/feeds/spreadsheets/**1w3A5sTDrumQglLWlUDlmqUkBJObU5ML1r_g--BxJcFM"
+
 
 spring:
   profiles:
