@@ -24,9 +24,20 @@ public class StrategyFunctions {
         for (; i < arrayList.size(); i++) {
             if (arrayList.get(i).contains("(")) {
                 do {
-                    //todo: figure out how to not split when there's a "[" and then a "," without another "]"
-                    ArrayList<String> temp = new ArrayList<String>(Arrays.asList(arrayList.get(i).replace("(", "").replace(")", "").split(",")));
-                    params.addAll(temp);
+                    ArrayList<String> possibleParams = new ArrayList<String>(Arrays.asList(arrayList.get(i).replace("(", "").replace(")", "").split(",")));
+                    String temp = "";
+                        for (int j = 0; j < possibleParams.size(); j++) {
+                            String possibleParamsString = possibleParams.toString().substring(1).substring(0, possibleParams.get(j).length());
+                            if (possibleParamsString.contains("[")) {
+                                do {
+                                    temp += possibleParamsString + ", ";
+                                    possibleParams = new ArrayList<String>(Arrays.asList(arrayList.get(++i).replace("(", "").replace(")", "").split(",")));
+                                } while (!possibleParams.toString().substring(1).substring(0, possibleParams.get(j).length()).contains("]"));
+                                possibleParamsString = possibleParams.toString().substring(1).substring(0, possibleParams.get(j).length());
+                                params.add(temp + possibleParamsString);
+                            } else
+                                params.add(possibleParams.get(j));
+                        }
                 } while (!arrayList.get(i++).contains(")"));
                 break;
             }
@@ -51,7 +62,7 @@ public class StrategyFunctions {
                 break;
             }
         }
-        return nextRow;
+        return nextRow + 1;
     }
 
     public static void setRow(ArrayList<String> paramNames, ArrayList<String> params, int xOffset, int xOffsetStart, int yOffsetStart, int yOffset, int nextRowInDatabase) {
@@ -70,7 +81,7 @@ public class StrategyFunctions {
         actions.moveByOffset(-xOffset, 0).click().build().perform(); //back a column to save
     }
 
-
+// deprecated with String.indexOf
     public static Integer getIndexAtChar(String text, String chars) {
         String[] ch = text.split("");
         String[] chComp = chars.split("");

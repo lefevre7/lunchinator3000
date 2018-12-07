@@ -42,7 +42,7 @@ public class InterpreterStrategy {
         ArrayList<String> params = new ArrayList<String>();
         ArrayList<Object> objects = new ArrayList<Object>();
         int i = 0;
-        int xOffset = 50;
+        int xOffset = 100;
         int yOffset = 20;
         int yOffsetStart = 145;
         int xOffsetStart =  50;
@@ -84,6 +84,7 @@ public class InterpreterStrategy {
     }
 
     public static ArrayList<ArrayList> select(String query) {
+        //todo - check this to see why there are tds in ballots 3 and 4 where there are only 10 rows in the db
         ArrayList<ArrayList> lists = new ArrayList<>();
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(SheetsDb.getWebDriver().getCurrentUrl(), String.class);
@@ -95,17 +96,25 @@ public class InterpreterStrategy {
             if (!rows.get(i).substring(0, 40).contains("td class"))
                 break;
             ArrayList<String> arrayList = new ArrayList<>();
-            ArrayList<String> colunmsInRows = new ArrayList<String>(Arrays.asList(rows.get(i).split("</td><td class=\"s0\" dir=\"ltr\">")));
-            for (int j = 0; j < colunmsInRows.size(); j++) {
-                colunmsInRows.set(j, colunmsInRows.get(j).replaceAll("</div></th><td class=\"s0\" dir=\"ltr\">", ""));
+            ArrayList<String> colunmsInRows = new ArrayList<String>(Arrays.asList(rows.get(i).split("<td "))); //find what's in the td - if there is something in a td, then regex for splitting it is "<td "
+            for (int j = 1; j < colunmsInRows.size(); j++) {
+                int nextLine = colunmsInRows.get(j).indexOf(">");
+                colunmsInRows.set(j, colunmsInRows.get(j).substring(nextLine + 1));
 
-                //get around a bug with regex .* only doing .
-                if (j == 0)
-                    colunmsInRows.set(j, colunmsInRows.get(j).substring(String.valueOf(i).length() - 1));
-
-                int nextLine = StrategyFunctions.getIndexAtChar(colunmsInRows.get(j), "</td>");
-                if (nextLine > 0)
-                    arrayList.add(colunmsInRows.get(j).substring(0, nextLine));
+                //adds whatever's inside of the <td> - there may or may not be a <span> - could refactor this
+                nextLine = colunmsInRows.get(j).indexOf("</td>");
+                int nextLineSpan = colunmsInRows.get(j).indexOf("</span>");
+                if ((nextLineSpan < nextLine) && nextLineSpan != -1)
+                    nextLine = nextLineSpan;
+                if (nextLine > 0) {
+                    if (nextLineSpan > 0) {
+                        int lineInSpanIndex = colunmsInRows.get(j).indexOf(">");
+                        String lineInSpan = colunmsInRows.get(j).substring(lineInSpanIndex + 1);
+                        arrayList.add(lineInSpan.substring(0, lineInSpan.indexOf("</span>")));
+                    }
+                    else
+                        arrayList.add(colunmsInRows.get(j).substring(0, nextLine));
+                }
                 else
                     arrayList.add(colunmsInRows.get(j));
             }

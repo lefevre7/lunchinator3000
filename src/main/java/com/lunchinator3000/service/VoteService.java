@@ -49,7 +49,7 @@ public class VoteService {
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
-        //recordVote(id, ballotId, voterName, emailAddress);
+        //todo - do other db and remove or just remove
         dbService.recordVote();
 
         logger.debug("Printing date in MMM dd, yyyy HH:mma");

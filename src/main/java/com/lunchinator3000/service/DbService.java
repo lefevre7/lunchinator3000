@@ -1,6 +1,8 @@
 package com.lunchinator3000.service;
 
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -27,8 +29,8 @@ public class DbService {
         ArrayList<String> previousRestaurantIds = new ArrayList<>();
 
 //        String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (\'11/28/18\', 2, [\'bob\', \'jim\'])"; //better
-        String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (\'11/28/18\', 2, [\'bob\'], [\'jim\'])"; //current
-//        String sql = "SELECT * FROM LUNCHINATOR3000";
+//        String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (\'11/28/18\', 2, [\'bob\'], [\'jim\'])"; //current
+        String sql = "SELECT * FROM LUNCHINATOR3000";
         Object o = sheetsDb.execute(sql);
         ResponseEntity<?> responseEntity = (ResponseEntity<?>) o;
 
@@ -50,7 +52,7 @@ public class DbService {
 
     public int insertWinner(RestaurantWinner restaurantWinner, ArrayList<Voter> voters) {
 
-        int[] sqlReturn;
+        /*int[] sqlReturn;
 
         //to start postressql server
         //pg_ctl -D /usr/local/var/postgres start
@@ -79,27 +81,37 @@ public class DbService {
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+*/
+        SimpleDateFormat sdfIn = new SimpleDateFormat("MMMM d, yyyy HH:mm");
+        SimpleDateFormat sdfOut = new SimpleDateFormat("MM/dd/yy");
+        String input = restaurantWinner.getDatetime();
+        Date date = null;
+        try {
+            date = sdfIn.parse(input);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String dateString = sdfOut.format(date);
 
-
-            String date = restaurantWinner.getDatetime();
-            String id = String.valueOf(restaurantWinner.getId());
+        String id = String.valueOf(restaurantWinner.getId());
             ArrayList<String> voterNames = new ArrayList<>();
 
             for (int i = 0; i < voters.size(); i++) {
                 voterNames.add(voters.get(i).getName());
             }
 
-//        String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (\'11/28/18\', 2, [\'bob\', \'jim\'])"; //better
-            String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (" + date + ", " + id + ", " + voterNames + ")"; //current
+//        String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (11/28/18, 2, [bob, jim])"; //better
+            String sql = "INSERT INTO Lunchinator3000 (date, winnerId, voters) VALUES (" + dateString + ", " + id + ", " + voterNames + ")"; //current
             Object o = sheetsDb.execute(sql);
             ResponseEntity<?> responseEntity = (ResponseEntity<?>) o;
             return responseEntity.getStatusCodeValue();
 
-        }
+//        }
     }
 
     public ArrayList<ArrayList<String>> getAWeekOfBallots() {
         ArrayList<ArrayList<String>> arrayLists = new ArrayList<>();
+        ArrayList<ArrayList<String>> arraySubLists = new ArrayList<>();
         ArrayList<ArrayList<String>> ballots = new ArrayList<>();
         ArrayList<String> previousRestaurantIds = new ArrayList<>();
         ArrayList<String> voters = new ArrayList<>();
@@ -107,7 +119,7 @@ public class DbService {
         String sql = "SELECT * FROM LUNCHINATOR3000";
 
 
-        //to start postressql server
+       /* //to start postressql server
         //pg_ctl -D /usr/local/var/postgres start
         Connection conn = null;
         String SQL1 = "psql lunchinator3000;";
@@ -139,7 +151,7 @@ public class DbService {
             return ballots;
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage());*/
             Object o = sheetsDb.execute(sql);
             ResponseEntity<?> responseEntity = (ResponseEntity<?>) o;
 
@@ -150,16 +162,16 @@ public class DbService {
                 //todo throw/log something.
                 ex.printStackTrace();
             }
-            arrayLists.subList(arrayLists.size() - 5, arrayLists.size());
-            for (int i = 0; i < arrayLists.size(); i++) {
-                previousRestaurantIds.add(arrayLists.get(i).get(1));
-                voters.add(arrayLists.get(i).get(2));
+            arraySubLists.addAll(arrayLists.subList(arrayLists.size() - 5, arrayLists.size()));
+            for (int i = 0; i < arraySubLists.size(); i++) {
+                previousRestaurantIds.add(arraySubLists.get(i).get(1));
+                voters.add(arraySubLists.get(i).get(2));
             }
 
             ballots.add(previousRestaurantIds);
             ballots.add(voters);
 
             return ballots;
-        }
+//        }
     }
 }

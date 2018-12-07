@@ -17,6 +17,7 @@ import com.lunchinator3000.dto.vote.Vote;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -196,26 +197,43 @@ public class RestaurantService {
         ArrayList<IncomingRestaurant> randomTemp = incomingRestaurants;
         ArrayList<IncomingRestaurant> randomRestaurants = new ArrayList<>();
         ArrayList<ArrayList<String>> weekOfBallots = dbService.getAWeekOfBallots();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        ArrayList<ArrayList<String>> previousVoters = objectMapper.readValue((ArrayList<ArrayList<String>>) weekOfBallots.get(2), ArrayList.class);
-        ArrayList<String> previousVoters = weekOfBallots.get(2);
-        String[] previousVotersArray = weekOfBallots.get(2).toArray(new String[0]);
-//        for (int i = 0; i < previousVotersArray.length; i++) {
-//            ArrayList<String> previousVotersArrayList = (ArrayList<String>) previousVotersArray[i];
-//        }
+        ArrayList<ArrayList<String>> previousVoters = new ArrayList<>();
+        ArrayList<String> currentVoters = new ArrayList<>();
+        for (int i = 0; i < voters.size(); i++) {
+            currentVoters.add(voters.get(i).getName().toUpperCase());
+        }
+
+        for (int i = 0; i < weekOfBallots.get(1).size(); i++) {
+            ArrayList<String> ballotVotersArray = embeddedStringArrayToArrayList(weekOfBallots.get(1).get(i));
+            previousVoters.add(ballotVotersArray);
+        }
 
         Collections.shuffle(randomTemp);
         int numOfRandomRestaurants = 5;
         for (int i = 0; i < numOfRandomRestaurants; i++) {
-                if (!weekOfBallots.get(1).contains(randomTemp.get(i).getId()) && !weekOfBallots.get(2).containsAll(voters)) {
+            //if it does have the current voters - then get restaurants that are not those 5 ids
+            if ((i < previousVoters.size()) && previousVoters.get(i).containsAll(currentVoters)) { //should go through the [pairs] of voters
+                if (!weekOfBallots.get(0).get(i).equals(String.valueOf(randomTemp.get(i).getId()))) {
                     randomRestaurants.add(randomTemp.get(i));
                 }
                 else {
                     numOfRandomRestaurants++;
                 }
+            } else {
+                //if it does not have the current voters - then just add the restaurants
+                randomRestaurants.add(randomTemp.get(i));
+            }
         }
-
         return randomRestaurants;
+    }
+
+    private ArrayList<String> embeddedStringArrayToArrayList(String s) {
+        ArrayList<String> ballotVotersArray = new ArrayList<>();
+        String [] ballotVoters = s.substring(1).substring(0, s.length() - 2).split(",");
+        for (int j = 0; j < ballotVoters.length ; j++) {
+            ballotVotersArray.add(ballotVoters[j].trim());
+        }
+        return ballotVotersArray;
     }
 
     public ArrayList<Integer> getAverageRestaurantRating(ArrayList<ArrayList<RestaurantReview>> restaurantsReviews) {
