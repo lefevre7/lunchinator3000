@@ -47,7 +47,7 @@ public class DbConfig {
         params.add("11/15/18");
         params.add("5");
         Actions actions = new Actions(webDriver);
-        int xOffset = 105;
+        int xOffset = 100;
         int yOffset = 20;
         int yOffsetStart = 145;
         int xOffsetStart =  50;
@@ -95,12 +95,7 @@ public class DbConfig {
         actions.moveByOffset(xOffset, 0).click().build().perform();
         actions.moveByOffset(0, 0).sendKeys(params.get(1)).build().perform();
 
-        //todo call this at the end of all current processes
         actions.moveByOffset(-xOffset, 0).click().build().perform(); //back to beginning of row*/
-
-
-        //todo: 2 rows in a row from 0
-        //todo: n columns from 0-colunm
 
         return webDriver;
     }

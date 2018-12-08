@@ -42,10 +42,6 @@ public class InterpreterStrategy {
         ArrayList<String> params = new ArrayList<String>();
         ArrayList<Object> objects = new ArrayList<Object>();
         int i = 0;
-        int xOffset = 100;
-        int yOffset = 20;
-        int yOffsetStart = 145;
-        int xOffsetStart =  50;
         int nextRowInDatabase = 1;
 
         //find the name of the sheet (Lunchinator3000)
@@ -61,9 +57,9 @@ public class InterpreterStrategy {
         params = (ArrayList<String>) method.invoke(method.getName(), query.toUpperCase().replaceFirst(method.getName().toUpperCase(), "").replaceAll("", ""));
 
         //by finding how many are filled/to go down
-        nextRowInDatabase = StrategyFunctions.getNextRowNumber(SheetsDb.getWebDriver().getCurrentUrl());
+        nextRowInDatabase = select("Select * from " + table).size() + 1;
 
-        StrategyFunctions.setRow(paramNames, params, xOffset, xOffsetStart, yOffsetStart, yOffset, nextRowInDatabase);
+        StrategyFunctions.setRow(paramNames, params, nextRowInDatabase);
 
     }
 
@@ -84,13 +80,13 @@ public class InterpreterStrategy {
     }
 
     public static ArrayList<ArrayList> select(String query) {
-        //todo - check this to see why there are tds in ballots 3 and 4 where there are only 10 rows in the db
         ArrayList<ArrayList> lists = new ArrayList<>();
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(SheetsDb.getWebDriver().getCurrentUrl(), String.class);
         // <div class="row-header-wrapper" style="line-height: 20px;">16</div></th><td class="s0" dir="ltr">11/15/18</td><td class="s0" dir="ltr">5</td> - didn't do more than 10
         ArrayList<String> rows = new ArrayList<String>(Arrays.asList(result.split("<div class=\"row-header-wrapper\" style=\"line-height: 20px;\">.\\\\*"))); //</div></th><td class="s0" dir="ltr">
         for (int i = 1; i < rows.size(); i++ ) {
+            int nulls = 0;
 
             //get around a bug with regex .* only doing .
             if (!rows.get(i).substring(0, 40).contains("td class"))
@@ -99,6 +95,8 @@ public class InterpreterStrategy {
             ArrayList<String> colunmsInRows = new ArrayList<String>(Arrays.asList(rows.get(i).split("<td "))); //find what's in the td - if there is something in a td, then regex for splitting it is "<td "
             for (int j = 1; j < colunmsInRows.size(); j++) {
                 int nextLine = colunmsInRows.get(j).indexOf(">");
+
+                //get around a bug with regex .* only doing .
                 colunmsInRows.set(j, colunmsInRows.get(j).substring(nextLine + 1));
 
                 //adds whatever's inside of the <td> - there may or may not be a <span> - could refactor this
@@ -118,7 +116,17 @@ public class InterpreterStrategy {
                 else
                     arrayList.add(colunmsInRows.get(j));
             }
-            lists.add(arrayList);
+            for (int j = 0; j < arrayList.size(); j++) {
+                if (arrayList.get(j).contains("</td>") || arrayList.get(j).contains("<td>")) {
+                    arrayList.set(j, "");
+                }
+
+                if (arrayList.get(j).equals(""))
+                    nulls++;
+                else;
+            }
+            if (nulls < arrayList.size())
+                lists.add(arrayList);
         }
         return lists;
         //just assume it's "from" the current table - though can add a from function in

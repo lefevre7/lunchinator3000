@@ -162,7 +162,15 @@ public class DbService {
                 //todo throw/log something.
                 ex.printStackTrace();
             }
-            arraySubLists.addAll(arrayLists.subList(arrayLists.size() - 5, arrayLists.size()));
+            for (int i = 0; i < arrayLists.size(); i++) {
+                if (!arrayLists.get(i).get(0).equals("") && arraySubLists.size() < 5){
+                    arraySubLists.add(arrayLists.get(i));
+                }
+                else if (arraySubLists.size() >= 5){
+                    break;
+                }
+            }
+
             for (int i = 0; i < arraySubLists.size(); i++) {
                 previousRestaurantIds.add(arraySubLists.get(i).get(1));
                 voters.add(arraySubLists.get(i).get(2));
