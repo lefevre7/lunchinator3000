@@ -1,5 +1,8 @@
 # lunchinator3000
 
+Follows these guidelines:
+https://interview-project-17987.herokuapp.com/backend-software-engineer-test
+
 Steps to run:
 1. Clone https://github.com/lefevre7/lunchinator3000
 2. Run > Run > Edit Configurations
@@ -36,7 +39,7 @@ where raw and JSON are marked for the body and {"Content-Type":"application/json
 2. http://localhost:8080/api/ballot/f396be54-b960-46d7-b3f9-57ff92239187 in your browser or using Get in Postman
 Where the {ballodId} is f396be54-b960-46d7-b3f9-57ff92239187 an obtained from the responce in step one from Postman.
 
-A sample responce before endTime:
+A sample response before endTime:
 ~~~~
 {
   "suggestion": {
@@ -80,7 +83,7 @@ A sample responce before endTime:
   ]
 }
 ~~~~
-A sample responce after endTime:
+A sample response after endTime:
 ~~~~
 {
   "winner": {

@@ -1,23 +1,23 @@
-package com.lunchinator3000;
+package com.lunchinator3000.service;
 
+import com.lunchinator3000.dto.ballot.Ballot;
+import com.lunchinator3000.dto.vote.Vote;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
-/**
- * Created by Jeremy L on 5/11/2017.
- * VoteController obtains obtains a voter's vote and records it if it's not past time.
- */
-@RestController
-public class VoteController {
+public class VoteService {
+
+    private final Logger logger = LoggerFactory.getLogger(VoteService.class);
+    private BallotService ballotService;
 
     private static HashMap<String,Vote> votes = null;
     // Implemented (in a singleton way) (if there isn't one, then create one)
@@ -32,47 +32,41 @@ public class VoteController {
         return votes;
     }
 
-    // Prevents any other class from instantiating it
-    public VoteController() {
+    @Autowired
+    public VoteService(BallotService ballotService) {
+        this.ballotService = ballotService;
     }
 
 
-    @RequestMapping(value = "/api/vote", method = RequestMethod.POST)
-    public @ResponseBody ResponseEntity<String> getVote(@RequestParam("id") int id, @RequestParam("ballotId") UUID ballotId,
-                                                 @RequestParam("voterName") String voterName,
-                                                 @RequestParam("emailAddress") String emailAddress) {
-        System.out.println("In the /api/vote getVote method");
+    public ResponseEntity<String> getVote(int id, UUID ballotId, String voterName, String emailAddress) {
 
-        // This is the correct way to get the votes
-        VoteController voteController = new VoteController();
-        HashMap<String,Vote> votes = voteController.getVotes();
+        HashMap<String, Vote> votes = getVotes();
 
-        CreateBallot createBallot = new CreateBallot();
-        CreateBallot.Ballot1 ballot = createBallot.getBallot();
+        Ballot ballot = ballotService.getBallot();
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
         //recordVote(id, ballotId, voterName, emailAddress);
-        System.out.println("Printing date in MMM dd, yyyy HH:mma");
+        logger.debug("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();
         dateFormat.format(date);
-        System.out.println(date);
+        logger.debug(String.valueOf(date));
 
         // If the current date is before the ballot's time
-        if(ballot.getTime().before(date)) {
+        if (ballot.getTime().before(date)) {
 
-            String error = "";
+            String error = "Vote not counted";
             return new ResponseEntity<String>(error, HttpStatus.CONFLICT);
-        }
-        else
-        {
+        } else {
             if (votes.containsKey(emailAddress))
                 votes.replace(emailAddress, vote);
             else
                 votes.put(emailAddress, vote);
 
-            String message = "";
+            String message = "Your vote has been cast";
+
+            logger.info("A vote has been cast");
             return new ResponseEntity<String>(message, HttpStatus.OK);
         }
     }
@@ -93,5 +87,4 @@ public class VoteController {
         }
 
     }*/
-
 }

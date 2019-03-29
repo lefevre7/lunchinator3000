@@ -1,23 +1,45 @@
-package com.lunchinator3000;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.*;
+package com.lunchinator3000.service;
 
 /**
  * Created by Jeremy L on 5/11/2017.
  * RestaurantController provides functions to obtain the restaurant suggestions, reviews, choices, and winner.
  */
-@RestController
-public class RestaurantController {
 
-    public RestaurantController() {
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lunchinator3000.dto.restaurant.IncomingRestaurant;
+import com.lunchinator3000.dto.restaurant.RestaurantChoiceAfter;
+import com.lunchinator3000.dto.restaurant.RestaurantChoiceBefore;
+import com.lunchinator3000.dto.restaurant.RestaurantReview;
+import com.lunchinator3000.dto.restaurant.RestaurantSuggestion;
+import com.lunchinator3000.dto.restaurant.RestaurantWinner;
+import com.lunchinator3000.dto.vote.Vote;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
+
+@RestController
+public class RestaurantService {
+
+    private final Logger logger = LoggerFactory.getLogger(RestaurantService.class);
+
+    private RestTemplate restTemplate;
+    private ObjectMapper mapper;
+
+    @Autowired
+    public RestaurantService(RestTemplate restTemplate, ObjectMapper objectMapper) {
+        this.restTemplate = restTemplate;
+        this.mapper = objectMapper;
     }
 
     public @ResponseBody
@@ -27,15 +49,12 @@ public class RestaurantController {
 
         JsonNode rootNode = null;
 
-        ObjectMapper mapper = new ObjectMapper();
-
-        RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject("https://interview-project-17987.herokuapp.com/api/restaurants", String.class);
 
-        System.out.println("Getting incomming restaurants");
+        logger.info("Getting incoming restaurants");
         try {
             rootNode = mapper.readTree(result);
-            System.out.println(rootNode);
+            logger.debug(String.valueOf(rootNode));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -48,23 +67,23 @@ public class RestaurantController {
             incomingRestaurant.setWaitTimeMinutes("none");
             incomingRestaurant.setDescription(rootNode.get(i).get("description").asText());
 
-            System.out.println(incomingRestaurant);
+            logger.debug(String.valueOf(incomingRestaurants));
 
             incomingRestaurants.add(incomingRestaurant);
         }
 
-        System.out.println("Trying to print incomingRestaurants");
-        System.out.println(incomingRestaurants);
+        logger.debug("Trying to print incomingRestaurants");
+        logger.debug(String.valueOf(incomingRestaurants));
 
         //get the five random restaurants
-        System.out.println("Getting 5 random restaurants");
+        logger.debug("Getting 5 random restaurants");
         fiveRandomRestaurants = randomlyPick5Restaurants(incomingRestaurants);
-        System.out.println("Printing five restaurants");
-        System.out.println(fiveRandomRestaurants.get(0).getName());
-        System.out.println(fiveRandomRestaurants.get(1).getName());
-        System.out.println(fiveRandomRestaurants.get(2).getName());
-        System.out.println(fiveRandomRestaurants.get(3).getName());
-        System.out.println(fiveRandomRestaurants.get(4).getName());
+        logger.debug("Printing five restaurants");
+        logger.debug(fiveRandomRestaurants.get(0).getName());
+        logger.debug(fiveRandomRestaurants.get(1).getName());
+        logger.debug(fiveRandomRestaurants.get(2).getName());
+        logger.debug(fiveRandomRestaurants.get(3).getName());
+        logger.debug(fiveRandomRestaurants.get(4).getName());
 
         return fiveRandomRestaurants;
     }
@@ -72,10 +91,10 @@ public class RestaurantController {
         ArrayList<RestaurantChoiceAfter> restaurantChoicesAfter = new ArrayList<>();
 
         for (int i = 0; i < restaurantChoicesBefore.size(); i++) {
-            System.out.println("Putting in restaurant votes");
+            logger.debug("Putting in restaurant votes");
 
-            System.out.println("Here are the restaurantChoicesBefore.get(i).getId()");
-            System.out.println(restaurantChoicesBefore.get(i).getId());
+            logger.debug("Here are the restaurantChoicesBefore.get(i).getId()");
+            logger.debug(String.valueOf(restaurantChoicesBefore.get(i).getId()));
             RestaurantChoiceAfter restaurantChoiceAfter = new RestaurantChoiceAfter();
             restaurantChoiceAfter.setId(restaurantChoicesBefore.get(i).getId());
             restaurantChoiceAfter.setName(restaurantChoicesBefore.get(i).getName());
@@ -83,19 +102,19 @@ public class RestaurantController {
             restaurantChoicesAfter.add(restaurantChoiceAfter);
         }
 
-        System.out.println("Printing HashMap votes");
+        logger.debug("Printing HashMap votes");
         for (String name: votes.keySet()){
             String key =name.toString();
             Integer value = votes.get(name).getRestaurantId();
             for(int i = 0; i < restaurantChoicesAfter.size(); i++) {
                 if(value.equals(restaurantChoicesAfter.get(i).getId())){
                     if(restaurantChoicesAfter.get(i).getVotes() < 1)
-                    restaurantChoicesAfter.get(i).setVotes(1);
+                        restaurantChoicesAfter.get(i).setVotes(1);
                     else
                         restaurantChoicesAfter.get(i).setVotes(restaurantChoicesAfter.get(i).getVotes()+1);
                 }
             }
-            System.out.println(key + " " + value);
+            logger.debug(key + " " + value);
         }
         return restaurantChoicesAfter;
     }
@@ -130,47 +149,43 @@ public class RestaurantController {
     public  ArrayList<ArrayList<RestaurantReview>> getRestaurantsReviews(ArrayList<IncomingRestaurant> incomingRestaurants) {
         ArrayList<ArrayList<RestaurantReview>> restaurantsReviews = new ArrayList<ArrayList<RestaurantReview>>();
 
-        ObjectMapper mapper = new ObjectMapper();
+        if (incomingRestaurants != null) {
+            logger.info("Getting incoming restaurantReviews");
+            for (int i = 0; i < incomingRestaurants.size(); i++) {
+                ArrayList<RestaurantReview> restaurantReviews = new ArrayList<>();
+                logger.debug(incomingRestaurants.get(i).getName());
+                String url = "https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20");
+                logger.debug(url);
 
-        if (incomingRestaurants != null)
-        for (int i = 0; i < incomingRestaurants.size(); i++) {
-            ArrayList<RestaurantReview> restaurantReviews = new ArrayList<>();
-            System.out.println(incomingRestaurants.get(i).getName());
-            String url = "https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20");
-            System.out.println(url);
+                JsonNode rootNode = null;
 
-            JsonNode rootNode = null;
+                URI url1 = URI.create("https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20"));
+                String result = restTemplate.getForObject(url1, String.class);
 
-            RestTemplate restTemplate = new RestTemplate();
+                try {
+                    rootNode = mapper.readTree(result);
+                    logger.debug(String.valueOf(rootNode));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            URI url1 = URI.create("https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20"));
-            String result = restTemplate.getForObject(url1, String.class);
+                for (int j = 0; j < rootNode.size(); j++) {
+                    RestaurantReview restaurantReview = new RestaurantReview();
+                    restaurantReview.setId(rootNode.get(j).get("Id").asInt());
+                    restaurantReview.setRestaurant(rootNode.get(j).get("restaurant").asText());
+                    restaurantReview.setReviewer(rootNode.get(j).get("reviewer").asText());
+                    restaurantReview.setRating(rootNode.get(j).get("rating").asInt());
+                    restaurantReview.setReview(rootNode.get(j).get("review").asText());
+                    logger.debug("Here is the restaurant review");
+                    logger.debug(String.valueOf(restaurantReview));
 
-            System.out.println("Getting incoming restaurantReviews");
-            try {
-                rootNode = mapper.readTree(result);
-                System.out.println(rootNode);
-            } catch (IOException e) {
-                e.printStackTrace();
+                    restaurantReviews.add(restaurantReview);
+                }
+                logger.debug("Here are the reviews of the restaurants");
+                logger.debug(String.valueOf(restaurantReviews));
+                restaurantsReviews.add(restaurantReviews);
             }
-
-            for (int j = 0; j < rootNode.size(); j++) {
-                RestaurantReview restaurantReview = new RestaurantReview();
-                restaurantReview.setId(rootNode.get(j).get("Id").asInt());
-                restaurantReview.setRestaurant(rootNode.get(j).get("restaurant").asText());
-                restaurantReview.setReviewer(rootNode.get(j).get("reviewer").asText());
-                restaurantReview.setRating(rootNode.get(j).get("rating").asInt());
-                restaurantReview.setReview(rootNode.get(j).get("review").asText());
-                System.out.println("Here is the restaurant review");
-                System.out.println(restaurantReview);
-
-                restaurantReviews.add(restaurantReview);
-            }
-            System.out.println("Here are the reviews of the restaurants");
-            System.out.println(restaurantReviews);
-            restaurantsReviews.add(restaurantReviews);
-        }
-        else
+        } else
         {} //return null; //todo: maybe do something more
         return restaurantsReviews;
     }
@@ -194,36 +209,36 @@ public class RestaurantController {
         for (int i = 0; i < restaurantsReviewsSize; i++) {
             int restaurantReviewsSize = restaurantsReviews.get(i).size();
 
-            System.out.println("Here is the restaurantReviewSize");
-            System.out.println(restaurantReviewsSize);
+            logger.debug("Here is the restaurantReviewSize");
+            logger.debug(String.valueOf(restaurantReviewsSize));
 
             for (int j = 0; j < restaurantReviewsSize; j++) {
                 int rating = restaurantsReviews.get(i).get(j).getRating();
 
-                System.out.println("Here is the rating");
-                System.out.println(rating);
+                logger.debug("Here is the rating");
+                logger.debug(String.valueOf(rating));
 
                 averageRating = averageRating + rating;
 
-                System.out.println("Here is the averageRating");
-                System.out.println(averageRating);
+                logger.debug("Here is the averageRating");
+                logger.debug(String.valueOf(averageRating));
 
             }
             actualAverageRating = averageRating.floatValue() / (restaurantsReviews.get(i).size());
 
-            System.out.println("Here is the actualAverageRating");
-            System.out.println(actualAverageRating);
+            logger.debug("Here is the actualAverageRating");
+            logger.debug(String.valueOf(actualAverageRating));
 
             averageRating = Math.round(actualAverageRating);
 
-            System.out.println("Here is the averageRating rounded");
-            System.out.println(averageRating);
+            logger.debug("Here is the averageRating rounded");
+            logger.debug(String.valueOf(averageRating));
 
             averageRatings.add(averageRating);
 
-            System.out.println("Here is the averageRatings");
+            logger.debug("Here is the averageRatings");
             for (int j = 0; j < averageRatings.size(); j++) {
-                System.out.println(averageRatings.get(j));
+                logger.debug(String.valueOf(averageRatings.get(j)));
             }
             averageRating = 0;
         }
@@ -254,11 +269,11 @@ public class RestaurantController {
 
     public RestaurantReview getRestaurantSuggestionTopReviewer(Integer index, ArrayList<ArrayList<RestaurantReview>> restaurantsReviews) {
 
-        System.out.println("Here is the index of the max rating");
-        System.out.println(index);
+        logger.debug("Here is the index of the max rating");
+        logger.debug(String.valueOf(index));
 
-        System.out.println("Here is the size of the restaurantsReviews");
-        System.out.println(restaurantsReviews.size());
+        logger.debug("Here is the size of the restaurantsReviews");
+        logger.debug(String.valueOf(restaurantsReviews.size()));
 
         Integer max = 0;
         int maxTemp = 0;

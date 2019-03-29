@@ -1,0 +1,18 @@
+
+logging:
+  file: "./logs/log.log"
+  level:
+  # Only print warnings and above from external libraries
+    com:
+      lunchinator3000: INFO
+
+#logging.level.com.lunchinator3000=INFO
+
+server:
+  # Set server port, or set to 0 to bind to any open port
+  port: 8080
+
+
+spring:
+  profiles:
+    active: local # Default to the local profile when none is supplied

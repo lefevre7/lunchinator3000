@@ -1,4 +1,4 @@
-package com.lunchinator3000;
+package com.lunchinator3000.dto.vote;
 
 import java.util.UUID;
 
