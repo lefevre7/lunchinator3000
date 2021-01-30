@@ -2,7 +2,7 @@ package com.lunchinator3000.dto.vote;
 
 import javax.persistence.*;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
 public class Votes {
 
     public Votes(int restaurant_id, String ballot_id, String voter_name, String email_address) {

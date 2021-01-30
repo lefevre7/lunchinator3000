@@ -54,8 +54,6 @@ public class VoteService {
 
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
-        //recordVote(id, ballotId, voterName, emailAddress);
-        repository.save(new Votes(id, ballotId.toString(), voterName, emailAddress));
         logger.debug("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();
@@ -72,6 +70,9 @@ public class VoteService {
                 votes.replace(emailAddress, vote);
             else
                 votes.put(emailAddress, vote);
+
+            //recordVote(id, ballotId, voterName, emailAddress);
+            repository.save(new Votes(id, ballotId.toString(), voterName, emailAddress));
 
             String message = "Your vote has been cast";
 
