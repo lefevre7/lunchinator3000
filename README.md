@@ -7,9 +7,10 @@ Steps to run:
 1. Clone https://github.com/lefevre7/lunchinator3000
 2. Run > Run > Edit Configurations
 3. Press the + button
-4. Add Configuration will pop up, pick Maven
+4. Add Configuration will pop up, pick Application
 5. Put the folder you cloned it in where it says "Working directory"
-6. Put spring-boot:run on the "Command line" spot
+6. Make sure Main class is "com.lunchinator3000.Lunchinator3000Application"
+7. Put username=****;password=**** in the Environment Variables spot with the given username and password
 7. Configure the JDK if nessessary:
   -Under Project Structure > Project SDK pick java version (1.8.0_121 is what I have)
 8. Possibly Reimport All Maven Projects

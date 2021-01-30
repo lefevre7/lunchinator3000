@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class BallotService {
+    private static final String PRECISE_DATETIME = "MMMM dd, yyyy HH:mma";
+    private static final String REGULAR_DATETIME = "MM/dd/yy HH:mm";
     private final Logger logger = LoggerFactory.getLogger(BallotService.class);
     private static ArrayList<IncomingRestaurant> randomRestaurants;
     private static UUID ballotId;
@@ -74,7 +76,7 @@ public class BallotService {
 
         // Getting the most current date and time as possible
         logger.debug("Printing date in MMM dd, yyyy HH:mma");
-        DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
+        DateFormat dateFormat = new SimpleDateFormat(PRECISE_DATETIME);
         Date date = new Date();
         dateFormat.format(date);
         logger.debug(String.valueOf(date));
@@ -138,7 +140,7 @@ public class BallotService {
 
         //todo: add support for 12 hr time and update readme
         endTime = initialBallot.getEndTime();
-        Date date = new SimpleDateFormat("MM/dd/yy HH:mm").parse(endTime);
+        Date date = new SimpleDateFormat(REGULAR_DATETIME).parse(endTime);
         ballot.setTime(date);
 
         ballot.setVoters(initialBallot.getVoters());

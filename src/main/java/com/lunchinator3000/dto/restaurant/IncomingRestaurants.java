@@ -9,7 +9,6 @@ public class IncomingRestaurants {
 
         public IncomingRestaurants() {
             super();
-
         }
 
         public IncomingRestaurants(int id, String name, String waitTimeMinutes, String description) {

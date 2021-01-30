@@ -4,9 +4,7 @@ logging:
   level:
   # Only print warnings and above from external libraries
     com:
-      lunchinator3000: INFO
-
-#logging.level.com.lunchinator3000=INFO
+      lunchinator3000: ERROR
 
 server:
   # Set server port, or set to 0 to bind to any open port
@@ -16,3 +14,14 @@ server:
 spring:
   profiles:
     active: local # Default to the local profile when none is supplied
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: "jdbc:postgresql://ec2-52-6-45-247.compute-1.amazonaws.com:5432/dp1o95qq89ciu"
+    username: ${username}
+    password: ${password}
+    type: org.apache.tomcat.jdbc.pool.DataSource
+  jpa:
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false

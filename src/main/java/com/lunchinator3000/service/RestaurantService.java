@@ -31,6 +31,9 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class RestaurantService {
 
+    private static final String RESTAURANTS_API = "https://interview-project-17987.herokuapp.com/api/restaurants";
+    private static final String RESTAURANT_REVIEWS_URL = "https://interview-project-17987.herokuapp.com/api/reviews/";
+
     private final Logger logger = LoggerFactory.getLogger(RestaurantService.class);
 
     private RestTemplate restTemplate;
@@ -49,7 +52,7 @@ public class RestaurantService {
 
         JsonNode rootNode = null;
 
-        String result = restTemplate.getForObject("https://interview-project-17987.herokuapp.com/api/restaurants", String.class);
+        String result = restTemplate.getForObject(RESTAURANTS_API, String.class);
 
         logger.info("Getting incoming restaurants");
         try {
@@ -154,31 +157,42 @@ public class RestaurantService {
             for (int i = 0; i < incomingRestaurants.size(); i++) {
                 ArrayList<RestaurantReview> restaurantReviews = new ArrayList<>();
                 logger.debug(incomingRestaurants.get(i).getName());
-                String url = "https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20");
+                String url = RESTAURANT_REVIEWS_URL + incomingRestaurants.get(i).getName().replaceAll(" ", "%20");
                 logger.debug(url);
 
                 JsonNode rootNode = null;
 
-                URI url1 = URI.create("https://interview-project-17987.herokuapp.com/api/reviews/" + incomingRestaurants.get(i).getName().replaceAll(" ", "%20"));
-                String result = restTemplate.getForObject(url1, String.class);
-
+                URI uri = URI.create(url);
+                //todo make a different call to own service, or own json/string list on this server if doesn't work, or --return a ballot without reviews--
                 try {
-                    rootNode = mapper.readTree(result);
-                    logger.debug(String.valueOf(rootNode));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    String result = restTemplate.getForObject(uri, String.class);
 
-                for (int j = 0; j < rootNode.size(); j++) {
+                    try {
+                        rootNode = mapper.readTree(result);
+                        logger.debug(String.valueOf(rootNode));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    for (int j = 0; j < rootNode.size(); j++) {
+                        RestaurantReview restaurantReview = new RestaurantReview();
+                        restaurantReview.setId(rootNode.get(j).get("Id").asInt());
+                        restaurantReview.setRestaurant(rootNode.get(j).get("restaurant").asText());
+                        restaurantReview.setReviewer(rootNode.get(j).get("reviewer").asText());
+                        restaurantReview.setRating(rootNode.get(j).get("rating").asInt());
+                        restaurantReview.setReview(rootNode.get(j).get("review").asText());
+                        logger.debug("Here is the restaurant review");
+                        logger.debug(String.valueOf(restaurantReview));
+
+                        restaurantReviews.add(restaurantReview);
+                    }
+                } catch (Exception e) {
                     RestaurantReview restaurantReview = new RestaurantReview();
-                    restaurantReview.setId(rootNode.get(j).get("Id").asInt());
-                    restaurantReview.setRestaurant(rootNode.get(j).get("restaurant").asText());
-                    restaurantReview.setReviewer(rootNode.get(j).get("reviewer").asText());
-                    restaurantReview.setRating(rootNode.get(j).get("rating").asInt());
-                    restaurantReview.setReview(rootNode.get(j).get("review").asText());
-                    logger.debug("Here is the restaurant review");
-                    logger.debug(String.valueOf(restaurantReview));
-
+                    restaurantReview.setId(incomingRestaurants.get(i).getId());
+                    restaurantReview.setRestaurant(incomingRestaurants.get(i).getName());
+                    restaurantReview.setReviewer("None");
+                    restaurantReview.setRating(-1);
+                    restaurantReview.setReview("None could be obtained");
                     restaurantReviews.add(restaurantReview);
                 }
                 logger.debug("Here are the reviews of the restaurants");
@@ -292,7 +306,14 @@ public class RestaurantService {
                 break;
             }
         }
-        return restaurantsReviews.get(index).get(index1);
+        RestaurantReview restaurantReview = new RestaurantReview();
+        try {
+            restaurantReview = restaurantsReviews.get(index).get(index1);
+        } catch (NullPointerException e) {
+            if (restaurantsReviews.size() > 0)
+                restaurantReview = restaurantsReviews.get(0).get(0);
+        }
+        return restaurantReview;
     }
 
     public ArrayList<RestaurantChoiceBefore> getRestaurantChoiceBefore(ArrayList<Integer> averageRatings, ArrayList<IncomingRestaurant> fiveRandomRestaurants) {

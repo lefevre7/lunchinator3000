@@ -2,11 +2,16 @@ package com.lunchinator3000.service;
 
 import com.lunchinator3000.dto.ballot.Ballot;
 import com.lunchinator3000.dto.vote.Vote;
+import com.lunchinator3000.dto.vote.Votes;
+import com.lunchinator3000.repo.VotesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -14,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
+@Service
 public class VoteService {
 
     private final Logger logger = LoggerFactory.getLogger(VoteService.class);
@@ -37,6 +43,8 @@ public class VoteService {
         this.ballotService = ballotService;
     }
 
+    @Autowired
+    private VotesRepository repository;
 
     public ResponseEntity<String> getVote(int id, UUID ballotId, String voterName, String emailAddress) {
 
@@ -47,6 +55,7 @@ public class VoteService {
         Vote vote = new Vote(ballotId, emailAddress, id, voterName);
 
         //recordVote(id, ballotId, voterName, emailAddress);
+        repository.save(new Votes(id, ballotId.toString(), voterName, emailAddress));
         logger.debug("Printing date in MMM dd, yyyy HH:mma");
         DateFormat dateFormat = new SimpleDateFormat("MMMM dd, yyyy HH:mma");
         Date date = new Date();
