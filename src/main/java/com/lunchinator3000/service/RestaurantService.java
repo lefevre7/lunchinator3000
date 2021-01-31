@@ -19,11 +19,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 
+import com.lunchinator3000.exception.LunchinatorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -45,6 +46,51 @@ public class RestaurantService {
         this.mapper = objectMapper;
     }
 
+    public String getAllRestaurants() {
+        try {
+            ResponseEntity<String> restaurantsApiResponse = restTemplate.getForEntity(RESTAURANTS_API, String.class);
+            if (restaurantsApiResponse.getStatusCodeValue() < 400) {
+                String response = restaurantsApiResponse.getBody();
+                if ((null == response) || response.isEmpty()) {
+                    logger.warn("Restaurants API call succeeded but returned a null or empty result. Here is the body: "
+                            + response + " And here is the status code: " + restaurantsApiResponse.getStatusCodeValue());
+                }
+                return response;
+            } else {
+                String warn = "Restaurants API call errored. Here is the body: " + restaurantsApiResponse.getBody() +
+                        " And here is the status code: " + restaurantsApiResponse.getStatusCodeValue();
+                logger.warn("Restaurants API call errored. Here is the body: " + restaurantsApiResponse.getBody() +
+                        " And here is the status code: " + restaurantsApiResponse.getStatusCodeValue());
+                throw new LunchinatorException(warn);
+            }
+        } catch (Exception e) {
+            logger.error("There has been an error calling the restaurants api: " + e.getMessage());
+            throw new LunchinatorException(e.getMessage());
+        }
+    }
+
+    public String getRestaurantReviews(URI url) {
+        try {
+            ResponseEntity<String> restaurantReviewsResponse = restTemplate.getForEntity(url, String.class);
+            if (restaurantReviewsResponse.getStatusCodeValue() < 400) {
+                String response = restaurantReviewsResponse.getBody();
+                if ((null == response) || response.isEmpty()) {
+                    logger.warn("Restaurant reviews call succeeded but returned a null or empty result. Here is the body: "
+                            + response + " And here is the status code: " + restaurantReviewsResponse.getStatusCodeValue());
+                }
+                return response;
+            } else {
+                String warn = "Restaurant reviews call errored. Here is the body: " + restaurantReviewsResponse.getBody() +
+                        " And here is the status code: " + restaurantReviewsResponse.getStatusCodeValue();
+                logger.warn(warn);
+                throw new LunchinatorException(warn);
+            }
+        } catch (Exception e) {
+            logger.error("There has been an error calling the restaurant reviews url: " + e.getMessage());
+            throw new LunchinatorException(e.getMessage());
+        }
+    }
+
     public @ResponseBody
     ArrayList<IncomingRestaurant> getRestaurants() {
         ArrayList<IncomingRestaurant> incomingRestaurants = new ArrayList<IncomingRestaurant>();
@@ -52,7 +98,7 @@ public class RestaurantService {
 
         JsonNode rootNode = null;
 
-        String result = restTemplate.getForObject(RESTAURANTS_API, String.class);
+        String result = getAllRestaurants();
 
         logger.info("Getting incoming restaurants");
         try {
@@ -165,7 +211,7 @@ public class RestaurantService {
                 URI uri = URI.create(url);
                 //todo make a different call to own service, or own json/string list on this server if doesn't work, or --return a ballot without reviews--
                 try {
-                    String result = restTemplate.getForObject(uri, String.class);
+                    String result = getRestaurantReviews(uri);
 
                     try {
                         rootNode = mapper.readTree(result);
@@ -186,7 +232,7 @@ public class RestaurantService {
 
                         restaurantReviews.add(restaurantReview);
                     }
-                } catch (Exception e) {
+                } catch (LunchinatorException e) {
                     RestaurantReview restaurantReview = new RestaurantReview();
                     restaurantReview.setId(incomingRestaurants.get(i).getId());
                     restaurantReview.setRestaurant(incomingRestaurants.get(i).getName());
