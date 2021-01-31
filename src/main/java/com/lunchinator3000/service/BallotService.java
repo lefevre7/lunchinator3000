@@ -8,11 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+@Service
 public class BallotService {
     private static final String PRECISE_DATETIME = "MMMM dd, yyyy HH:mma";
     private static final String REGULAR_DATETIME = "MM/dd/yy HH:mm";
