@@ -53,14 +53,13 @@ public class RestaurantService {
                 String response = restaurantsApiResponse.getBody();
                 if ((null == response) || response.isEmpty()) {
                     logger.warn("Restaurants API call succeeded but returned a null or empty result. Here is the body: "
-                            + response + " And here is the status code: " + restaurantsApiResponse.getStatusCodeValue());
+                            + response + "\nAnd here is the status code: " + restaurantsApiResponse.getStatusCodeValue());
                 }
                 return response;
             } else {
-                String warn = "Restaurants API call errored. Here is the body: " + restaurantsApiResponse.getBody() +
-                        " And here is the status code: " + restaurantsApiResponse.getStatusCodeValue();
-                logger.warn("Restaurants API call errored. Here is the body: " + restaurantsApiResponse.getBody() +
-                        " And here is the status code: " + restaurantsApiResponse.getStatusCodeValue());
+                String warn = "Restaurants API call error. Here is the body: " + restaurantsApiResponse.getBody() +
+                        "\nAnd here is the status code: " + restaurantsApiResponse.getStatusCodeValue();
+                logger.error(warn);
                 throw new LunchinatorException(warn);
             }
         } catch (Exception e) {
@@ -76,13 +75,13 @@ public class RestaurantService {
                 String response = restaurantReviewsResponse.getBody();
                 if ((null == response) || response.isEmpty()) {
                     logger.warn("Restaurant reviews call succeeded but returned a null or empty result. Here is the body: "
-                            + response + " And here is the status code: " + restaurantReviewsResponse.getStatusCodeValue());
+                            + response + "\nAnd here is the status code: " + restaurantReviewsResponse.getStatusCodeValue());
                 }
                 return response;
             } else {
-                String warn = "Restaurant reviews call errored. Here is the body: " + restaurantReviewsResponse.getBody() +
-                        " And here is the status code: " + restaurantReviewsResponse.getStatusCodeValue();
-                logger.warn(warn);
+                String warn = "Restaurant reviews call error. Here is the body: " + restaurantReviewsResponse.getBody() +
+                        "\nAnd here is the status code: " + restaurantReviewsResponse.getStatusCodeValue();
+                logger.error(warn);
                 throw new LunchinatorException(warn);
             }
         } catch (Exception e) {
